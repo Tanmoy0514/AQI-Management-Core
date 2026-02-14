@@ -6,12 +6,15 @@
     <title>Agri-Burn Management System (Delhi NCR)</title>
     <!-- Tailwind CSS (Keeping for utility if needed, though custom CSS is primary) -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
         :root {
             --primary-green: #2ecc71;
             --primary-red: #e74c3c;
             --primary-blue: #3498db;
+            --primary-purple: #9b59b6;
             --bg-light: #f4f7f6;
             --text-dark: #2c3e50;
         }
@@ -69,6 +72,9 @@
         /* --- CONTROLLER VIEW STYLES --- */
         .controller-view { border-top: 5px solid var(--primary-blue); }
 
+        /* --- MASK ADVISOR STYLES --- */
+        .mask-view { border-top: 5px solid var(--primary-purple); }
+
         .data-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -106,6 +112,12 @@
         }
         .badge-sim { background-color: #f1c40f; color: #000; }
         .badge-live { background-color: #2ecc71; color: #fff; display: none; }
+
+        /* Custom scrollbar for range list in Mask Advisor */
+        .range-scroll::-webkit-scrollbar { height: 6px; }
+        .range-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        .range-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+        .range-scroll::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
     </style>
 <script type="importmap">
 {

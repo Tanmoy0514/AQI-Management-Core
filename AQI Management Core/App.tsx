@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { FarmerView } from './components/FarmerView';
 import { ControllerView } from './components/ControllerView';
+import { MaskAdvisor } from './components/MaskAdvisor';
 import { calculateBurnStatus } from './utils/burnLogic';
 import { WeatherState, BurnStatus } from './types';
 
@@ -45,6 +46,11 @@ const App: React.FC = () => {
                 {/* Farmer View Card */}
                 <div className="w-full max-w-[500px]">
                     <FarmerView status={burnStatus} />
+                </div>
+
+                {/* Mask Advisor Card (New) */}
+                <div className="w-full max-w-[500px]">
+                    <MaskAdvisor currentAqi={weatherState.aqi} />
                 </div>
 
                 {/* Controller View Card */}
