@@ -1,5 +1,5 @@
 {
-  "name": "Agri-Burn Management System",
-  "description": "Simulating Stubble Burning Coordination for Delhi NCR",
+  "name": "Air Sentinel Dashboard",
+  "description": "A futuristic, cyberpunk-themed air quality monitoring dashboard featuring real-time city data, multi-mode interfaces (Citizen, Dev, Gov), and an AI health guardian agent.",
   "requestFramePermissions": []
 }
