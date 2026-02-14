@@ -4,24 +4,28 @@ import { MODES } from '../constants';
 
 interface SidebarProps {
   sidebarOpen: boolean;
-  setSidebarOpen: (v: boolean) => void;
-  currentMode: string;
-  setCurrentMode: (v: string) => void;
+  setSidebarOpen: (open: boolean) => void;
   darkMode: boolean;
-  setDarkMode: (v: boolean) => void;
+  setDarkMode: (dark: boolean) => void;
+  currentMode: string;
+  setCurrentMode: (mode: string) => void;
+  sidebarBg: string;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ 
-  sidebarOpen, setSidebarOpen, currentMode, setCurrentMode, darkMode, setDarkMode 
+const Sidebar: React.FC<SidebarProps> = ({
+  sidebarOpen,
+  setSidebarOpen,
+  darkMode,
+  setDarkMode,
+  currentMode,
+  setCurrentMode,
+  sidebarBg
 }) => {
-  const sidebarBg = darkMode ? 'bg-neutral-900 border-stone-800' : 'bg-white border-slate-200';
-
   return (
     <aside 
       className={`sticky top-0 h-screen flex flex-col justify-between border-r shadow-2xl transition-all duration-300 z-50 ${sidebarBg} ${sidebarOpen ? 'w-80' : 'w-20'}`}
     >
       <div>
-        {/* Logo & Toggle */}
         <div className="p-4 flex items-center justify-between">
           {sidebarOpen && (
             <div className="flex items-center gap-2 animate-in fade-in">
@@ -39,10 +43,8 @@ const Sidebar: React.FC<SidebarProps> = ({
           </button>
         </div>
 
-        {/* Nav Items (Modes) */}
         <div className="mt-8 px-3 space-y-2">
           {sidebarOpen && <p className="px-4 text-xs font-bold opacity-50 uppercase mb-2">Portals</p>}
-          
           {MODES.map(mode => {
             const Icon = mode.icon;
             const isActive = currentMode === mode.id;
@@ -65,7 +67,6 @@ const Sidebar: React.FC<SidebarProps> = ({
         </div>
       </div>
       
-      {/* Bottom Actions */}
       <div className="p-4 border-t border-slate-100 dark:border-stone-800">
         <button 
            onClick={() => setDarkMode(!darkMode)}

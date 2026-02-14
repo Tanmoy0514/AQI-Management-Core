@@ -1,35 +1,46 @@
 import React from 'react';
-import { MapPin, ChevronDown, ArrowLeft } from 'lucide-react';
-import { City } from '../types';
-import { MODES, CITIES } from '../constants';
+import { ArrowLeft, MapPin, ChevronDown } from 'lucide-react';
+import { City, Mode } from '../types';
+import { CITIES, MODES } from '../constants';
 
 interface HeaderProps {
-  darkMode: boolean;
   currentMode: string;
+  userName: string;
+  currentView: string;
+  handleBackToInput: () => void;
   selectedCity: City;
-  setSelectedCity: (c: City) => void;
-  title: string;
-  showBack?: boolean;
-  onBack?: () => void;
+  setSelectedCity: (city: City) => void;
+  headerBg: string;
+  darkMode: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ 
-  darkMode, currentMode, selectedCity, setSelectedCity, title, showBack, onBack
+const Header: React.FC<HeaderProps> = ({
+  currentMode,
+  userName,
+  currentView,
+  handleBackToInput,
+  selectedCity,
+  setSelectedCity,
+  headerBg,
+  darkMode
 }) => {
-  const headerBg = darkMode ? 'bg-neutral-900/90' : 'bg-white/90';
+
+  const getHeaderTitle = () => {
+    if (currentMode === 'user' && userName) return `${userName}'s Dashboard`;
+    return MODES.find((m: Mode) => m.id === currentMode)?.label || 'Dashboard';
+  };
 
   return (
     <header className={`px-6 py-4 flex justify-between items-center sticky top-0 z-40 backdrop-blur-md ${headerBg}`}>
        <h2 className="text-xl font-bold flex items-center gap-2">
-         {showBack && (
-            <button onClick={onBack} className="mr-2 p-1 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-full">
+         {currentMode === 'user' && currentView === 'report' && (
+            <button onClick={handleBackToInput} className="mr-2 p-1 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-full">
                <ArrowLeft className="w-5 h-5" />
             </button>
          )}
-         {title}
+         {getHeaderTitle()}
        </h2>
 
-       {/* City Dropdown */}
        <div className="relative group">
           <button className={`flex items-center gap-2 px-4 py-2 rounded-xl border font-medium text-sm transition-all ${darkMode ? 'bg-stone-800 border-stone-700 text-white' : 'bg-white border-slate-200 text-slate-700'}`}>
             <MapPin className="w-4 h-4 text-blue-500" />

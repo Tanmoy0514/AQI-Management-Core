@@ -1,6 +1,6 @@
 # Run and deploy your app
 
-Another improved version with better functionality.
+One of the most stable and improved version.
 
 This contains everything you need to run your app locally.
 

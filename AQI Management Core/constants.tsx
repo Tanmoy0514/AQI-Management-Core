@@ -1,12 +1,17 @@
-import { GraduationCap, Zap, User, Briefcase, Sun, Info, Terminal, Building2, LayoutDashboard, Truck, Building, Sprout } from 'lucide-react';
+import { 
+  GraduationCap, Zap, Truck, Building, Sprout, Info,
+  LayoutDashboard, Code, Building2 
+} from 'lucide-react';
 import { City, Role, Disease, Mode } from './types';
 
 export const CITIES: City[] = [
-  { name: 'Delhi', lat: 28.6139, lon: 77.2090, baseAQI: 380 },
-  { name: 'Kolkata', lat: 22.5726, lon: 88.3639, baseAQI: 220 },
-  { name: 'Mumbai', lat: 19.0760, lon: 72.8777, baseAQI: 150 },
-  { name: 'Chennai', lat: 13.0827, lon: 80.2707, baseAQI: 95 },
-  { name: 'Ahmedabad', lat: 23.0225, lon: 72.5714, baseAQI: 180 },
+  { name: 'Delhi', lat: 28.6139, lon: 77.2090, baseAQI: 380, state: 'Delhi' },
+  { name: 'Kolkata', lat: 22.5726, lon: 88.3639, baseAQI: 220, state: 'West Bengal' },
+  { name: 'Mumbai', lat: 19.0760, lon: 72.8777, baseAQI: 150, state: 'Maharashtra' },
+  { name: 'Chennai', lat: 13.0827, lon: 80.2707, baseAQI: 95, state: 'Tamil Nadu' },
+  { name: 'Ahmedabad', lat: 23.0225, lon: 72.5714, baseAQI: 180, state: 'Gujarat' },
+  { name: 'Bangalore', lat: 12.9716, lon: 77.5946, baseAQI: 85, state: 'Karnataka' },
+  { name: 'Lucknow', lat: 26.8467, lon: 80.9462, baseAQI: 310, state: 'Uttar Pradesh' },
 ];
 
 export const ROLES: Role[] = [
@@ -29,12 +34,6 @@ export const DISEASES: Disease[] = [
 
 export const MODES: Mode[] = [
   { id: 'user', label: 'User Dashboard', icon: LayoutDashboard },
-  { id: 'dev', label: 'Developer Console', icon: Terminal },
+  { id: 'dev', label: 'Developer Console', icon: Code },
   { id: 'gov', label: 'Government Portal', icon: Building2 },
 ];
-
-export const THEMES: Record<string, { cardBg: string; cardBorder: string; font: string; accent: string }> = {
-  USER: { cardBg: 'bg-white', cardBorder: 'border-slate-100', font: 'font-sans', accent: 'text-blue-500' },
-  DEV: { cardBg: 'bg-[#0d1117]', cardBorder: 'border-green-900', font: 'font-mono', accent: 'text-green-500' },
-  GOV: { cardBg: 'bg-slate-50', cardBorder: 'border-red-200', font: 'font-serif', accent: 'text-red-600' }
-};
