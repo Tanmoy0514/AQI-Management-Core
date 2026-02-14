@@ -1,101 +1,58 @@
-import React, { useState, useCallback } from 'react';
-import { Navbar } from './components/Navbar';
-import { CitySelector } from './components/CitySelector';
-import { AqiCard } from './components/AqiCard';
-import { ActivityProfiler } from './components/ActivityProfiler';
-import { ResultSection } from './components/ResultSection';
-import { Footer } from './components/Footer';
-import { MOCK_DATA } from './constants';
-import { calculateRisk } from './utils/aqiLogic';
-import { CityKey, UserInputs, AnalysisResult } from './types';
+import React, { useState, useEffect } from 'react';
+import { Header } from './components/Header';
+import { FarmerView } from './components/FarmerView';
+import { ControllerView } from './components/ControllerView';
+import { calculateBurnStatus } from './utils/burnLogic';
+import { WeatherState, BurnStatus } from './types';
 
 const App: React.FC = () => {
-    // State
-    const [currentCity, setCurrentCity] = useState<CityKey | null>(null);
-    const [currentAQI, setCurrentAQI] = useState<number>(0);
-    const [cityData, setCityData] = useState({
-        status: "--",
-        desc: "--",
-        temp: "--"
+    // Initial State
+    const [weatherState, setWeatherState] = useState<WeatherState>({
+        aqi: 150,
+        windSpeed: 10,
+        windDeg: 180 // South
     });
 
-    const [inputs, setInputs] = useState<UserInputs>({
-        role: 'student',
-        hours: 1,
-        transit: 'metro',
-        shopping: 'online'
+    const [burnStatus, setBurnStatus] = useState<BurnStatus>({
+        canBurn: false,
+        reason: 'Initializing...',
+        icon: '--',
+        text: 'Loading...',
+        subText: 'Checking satellites...',
+        advice: 'Please wait for the system to calculate weather conditions.',
+        statusColor: '#95a5a6'
     });
 
-    const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
+    // Update system logic when state changes
+    useEffect(() => {
+        const status = calculateBurnStatus(weatherState);
+        setBurnStatus(status);
+    }, [weatherState]);
 
-    // Logic: Update City
-    const handleCitySelect = useCallback((city: CityKey) => {
-        setCurrentCity(city);
-        
-        // Use Mock Data
-        const data = MOCK_DATA[city];
-        
-        // Add slight randomness to make it feel "live" (Preserving original logic)
-        // Original: data.aqi = Math.floor(data.aqi + (Math.random() * 10 - 5));
-        const randomizedAqi = Math.floor(data.aqi + (Math.random() * 10 - 5));
-        
-        setCurrentAQI(randomizedAqi);
-        setCityData({
-            status: data.status,
-            desc: data.desc,
-            temp: data.temp
-        });
-
-        // Hide previous results if city changes
-        setAnalysisResult(null);
-    }, []);
-
-    // Logic: Calculate Risk
-    const handleAnalyze = useCallback(() => {
-        if (!currentCity) {
-            alert("Please select a city first.");
-            return;
-        }
-        
-        const result = calculateRisk(currentAQI, currentCity, inputs);
-        setAnalysisResult(result);
-    }, [currentCity, currentAQI, inputs]);
+    const handleStateChange = (field: keyof WeatherState, value: number) => {
+        setWeatherState(prev => ({
+            ...prev,
+            [field]: value
+        }));
+    };
 
     return (
-        <div className="min-h-screen bg-[#f3f4f6]">
-            <Navbar currentLocation={currentCity || "Select City"} />
+        <div className="flex flex-col min-h-screen">
+            <Header />
             
-            <main className="max-w-6xl mx-auto px-4 py-6 space-y-6">
+            <div className="container mx-auto px-4 py-6 flex-1 flex flex-wrap justify-center gap-6">
                 
-                {/* Top Section: City & AQI Status */}
-                <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <CitySelector 
-                        selectedCity={currentCity} 
-                        onSelectCity={handleCitySelect} 
-                    />
-                    
-                    <AqiCard 
-                        city={currentCity}
-                        aqi={currentAQI}
-                        status={cityData.status}
-                        description={cityData.desc}
-                        temperature={cityData.temp}
-                    />
-                </section>
+                {/* Farmer View Card */}
+                <div className="w-full max-w-[500px]">
+                    <FarmerView status={burnStatus} />
+                </div>
 
-                {/* Middle Section: User Inputs */}
-                <ActivityProfiler 
-                    inputs={inputs} 
-                    setInputs={setInputs} 
-                    onAnalyze={handleAnalyze} 
-                />
+                {/* Controller View Card */}
+                <div className="w-full max-w-[500px]">
+                    <ControllerView state={weatherState} onStateChange={handleStateChange} />
+                </div>
 
-                {/* Result Section: Logic Output */}
-                <ResultSection result={analysisResult} />
-
-            </main>
-
-            <Footer />
+            </div>
         </div>
     );
 };

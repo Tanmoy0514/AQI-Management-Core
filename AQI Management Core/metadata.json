@@ -1,5 +1,5 @@
 {
-  "name": "AQI LifeGuard",
-  "description": "Smart Activity Planner based on Air Quality Index logic provided in Version 1",
+  "name": "Agri-Burn Management System",
+  "description": "Simulating Stubble Burning Coordination for Delhi NCR",
   "requestFramePermissions": []
 }

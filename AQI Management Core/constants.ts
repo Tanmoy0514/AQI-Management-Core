@@ -1,37 +1,36 @@
-import { CityData, CityKey } from './types';
-
-// --- MOCK DATA FOR PREVIEW ---
-// Preserving original data structure and values
-export const MOCK_DATA: Record<CityKey, CityData> = {
-    'Delhi': { aqi: 380, status: 'Severe', desc: 'Haze & Smoke', temp: '22°C' },
-    'Mumbai': { aqi: 155, status: 'Moderate', desc: 'Humid Haze', temp: '29°C' },
-    'Kolkata': { aqi: 210, status: 'Poor', desc: 'Mist', temp: '26°C' },
-    'Gujarat': { aqi: 95, status: 'Satisfactory', desc: 'Clear Sky', temp: '32°C' }
+export const CONFIG = {
+    weatherApiKey: null, // Placeholder
+    aqiApiKey: null,     // Placeholder
+    useLiveApi: false,   // Simulation mode
+    
+    // Thresholds for logic
+    AQI_DANGER_THRESHOLD: 300,  // If AQI is above this, pause burning regardless of wind
+    WIND_SPEED_THRESHOLD: 5,    // Low wind speed traps smoke
+    DELHI_BEARING_START: 135,   // Degrees (SE) - Example direction pointing to Delhi
+    DELHI_BEARING_END: 225      // Degrees (SW)
 };
 
-export const CITIES: { key: CityKey; label: string; region: string }[] = [
-    { key: 'Delhi', label: 'Delhi (NCR)', region: 'North' },
-    { key: 'Mumbai', label: 'Mumbai', region: 'West' },
-    { key: 'Kolkata', label: 'Kolkata', region: 'East' },
-    { key: 'Gujarat', label: 'Ahmedabad (Gujarat)', region: 'West' }
+export const CITIES = [
+    { key: 'delhi', label: 'Delhi', region: 'NCT' },
+    { key: 'noida', label: 'Noida', region: 'UP' },
+    { key: 'gurugram', label: 'Gurugram', region: 'Haryana' },
+    { key: 'ghaziabad', label: 'Ghaziabad', region: 'UP' },
+    { key: 'faridabad', label: 'Faridabad', region: 'Haryana' }
 ];
 
-// Multipliers for Logic
 export const TRANSIT_MULTIPLIERS: Record<string, number> = {
-    'auto': 3.0,
-    'bike': 2.5,
-    'walk': 2.0,
-    'bus_ev': 1.2,
-    'metro': 0.8,
-    'car_ac': 0.5,
-    // Default fallback
-    'default': 1.0
+    metro: 0.5,
+    car_ac: 0.6,
+    bus_ev: 0.8,
+    bike: 1.5,
+    auto: 1.5,
+    walk: 1.8,
+    default: 1.0
 };
 
 export const SHOPPING_MULTIPLIERS: Record<string, number> = {
-    'bazaar': 2.0,
-    'mall': 0.8,
-    'online': 0.1,
-    // Default fallback
-    'default': 1.0
+    online: 0.2,
+    mall: 0.6,
+    bazaar: 1.6,
+    default: 1.0
 };

@@ -1,11 +1,18 @@
-export interface CityData {
+export interface WeatherState {
     aqi: number;
-    status: string;
-    desc: string;
-    temp: string;
+    windSpeed: number;
+    windDeg: number;
 }
 
-export type CityKey = 'Delhi' | 'Mumbai' | 'Kolkata' | 'Gujarat';
+export interface BurnStatus {
+    canBurn: boolean;
+    reason: string;
+    icon: string;
+    text: string;
+    subText: string;
+    advice: string;
+    statusColor: string; // CSS variable or color string
+}
 
 export interface UserInputs {
     role: string;
@@ -23,3 +30,5 @@ export interface AnalysisResult {
     showAutoWarning: boolean;
     showShoppingWarning: boolean;
 }
+
+export type CityKey = string;
