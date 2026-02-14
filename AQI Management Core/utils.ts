@@ -5,7 +5,7 @@ export const getAQIColor = (aqi: number): ThemeColors => {
   if (aqi <= 100) return { bg: 'bg-yellow-400', text: 'text-yellow-600', border: 'border-yellow-400', label: 'Moderate' };
   if (aqi <= 200) return { bg: 'bg-orange-500', text: 'text-orange-600', border: 'border-orange-500', label: 'Unhealthy' };
   if (aqi <= 300) return { bg: 'bg-red-500', text: 'text-red-600', border: 'border-red-500', label: 'Very Unhealthy' };
-  return { bg: 'bg-rose-900', text: 'text-rose-900', border: 'border-rose-900', label: 'Hazardous' };
+  return { bg: 'bg-purple-600', text: 'text-purple-600', border: 'border-purple-600', label: 'Hazardous' };
 };
 
 export const generateAdvisory = (

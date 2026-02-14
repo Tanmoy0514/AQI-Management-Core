@@ -18,7 +18,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <aside 
-      className={`sticky top-0 h-screen flex flex-col justify-between border-r shadow-2xl transition-all duration-300 z-50 ${sidebarBg} ${sidebarOpen ? 'w-64' : 'w-20'}`}
+      className={`sticky top-0 h-screen flex flex-col justify-between border-r shadow-2xl transition-all duration-300 z-50 ${sidebarBg} ${sidebarOpen ? 'w-80' : 'w-20'}`}
     >
       <div>
         {/* Logo & Toggle */}

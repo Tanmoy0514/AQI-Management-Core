@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, ChevronDown } from 'lucide-react';
+import { MapPin, ChevronDown, ArrowLeft } from 'lucide-react';
 import { City } from '../types';
 import { MODES, CITIES } from '../constants';
 
@@ -8,17 +8,25 @@ interface HeaderProps {
   currentMode: string;
   selectedCity: City;
   setSelectedCity: (c: City) => void;
+  title: string;
+  showBack?: boolean;
+  onBack?: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ 
-  darkMode, currentMode, selectedCity, setSelectedCity 
+  darkMode, currentMode, selectedCity, setSelectedCity, title, showBack, onBack
 }) => {
   const headerBg = darkMode ? 'bg-neutral-900/90' : 'bg-white/90';
 
   return (
     <header className={`px-6 py-4 flex justify-between items-center sticky top-0 z-40 backdrop-blur-md ${headerBg}`}>
        <h2 className="text-xl font-bold flex items-center gap-2">
-         {MODES.find(m => m.id === currentMode)?.label}
+         {showBack && (
+            <button onClick={onBack} className="mr-2 p-1 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-full">
+               <ArrowLeft className="w-5 h-5" />
+            </button>
+         )}
+         {title}
        </h2>
 
        {/* City Dropdown */}
