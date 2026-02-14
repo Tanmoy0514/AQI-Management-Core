@@ -12,6 +12,7 @@ export interface Role {
   id: string;
   label: string;
   icon: LucideIcon;
+  contextLabel?: string;
 }
 
 export interface Disease {
@@ -43,6 +44,16 @@ export interface Advisory {
   safeTime: string;
   hasRisk: boolean;
   isOutdoor: boolean;
+}
+
+export interface AnalysisResult {
+  mask: string;
+  riskLevel: string;
+  generalAdvice: string;
+  title: string;
+  primaryAction: string;
+  commute: string;
+  specific: string;
 }
 
 export interface ThemeColors {

@@ -1,4 +1,4 @@
-import { GraduationCap, Zap, User, Briefcase, Sun, Info, Terminal, Building2 } from 'lucide-react';
+import { GraduationCap, Zap, User, Briefcase, Sun, Info, Terminal, Building2, LayoutDashboard, Truck, Building, Sprout } from 'lucide-react';
 import { City, Role, Disease, Mode } from './types';
 
 export const CITIES: City[] = [
@@ -10,12 +10,12 @@ export const CITIES: City[] = [
 ];
 
 export const ROLES: Role[] = [
-  { id: 'student', label: 'Student', icon: GraduationCap },
-  { id: 'athlete', label: 'Athlete/Runner', icon: Zap },
-  { id: 'outdoor', label: 'Outdoor Worker', icon: User },
-  { id: 'office', label: 'Office Worker', icon: Briefcase },
-  { id: 'farmer', label: 'Farmer', icon: Sun },
-  { id: 'other', label: 'Others', icon: Info },
+  { id: 'student', label: 'Student', icon: GraduationCap, contextLabel: 'School/University Name' },
+  { id: 'athlete', label: 'Athlete', icon: Zap, contextLabel: 'Sports Club/Team' },
+  { id: 'delivery', label: 'Delivery/Logistics', icon: Truck, contextLabel: 'Company Name' },
+  { id: 'office', label: 'Office Worker', icon: Building, contextLabel: 'Company Name' },
+  { id: 'farmer', label: 'Farmer', icon: Sprout, contextLabel: 'Region/Field Location' },
+  { id: 'other', label: 'Others', icon: Info, contextLabel: 'Profession Name' },
 ];
 
 export const DISEASES: Disease[] = [
@@ -28,9 +28,9 @@ export const DISEASES: Disease[] = [
 ];
 
 export const MODES: Mode[] = [
-  { id: 'user', label: 'User View', icon: User },
-  { id: 'dev', label: 'Developer View', icon: Terminal },
-  { id: 'gov', label: 'Government View', icon: Building2 },
+  { id: 'user', label: 'User Dashboard', icon: LayoutDashboard },
+  { id: 'dev', label: 'Developer Console', icon: Terminal },
+  { id: 'gov', label: 'Government Portal', icon: Building2 },
 ];
 
 export const THEMES: Record<string, { cardBg: string; cardBorder: string; font: string; accent: string }> = {

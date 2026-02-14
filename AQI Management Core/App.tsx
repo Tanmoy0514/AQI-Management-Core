@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { CITIES } from './constants';
 import { AQIData, ForecastItem } from './types';
-import { generateAdvisory } from './utils';
-import { Hammer, Building2 } from 'lucide-react';
+import { getRoleBasedAnalysis } from './utils';
+import { Hammer } from 'lucide-react';
 
 import Header from './components/Header';
+import Sidebar from './components/Sidebar';
 import ProfileForm from './components/ProfileForm';
 import AdvisoryDisplay from './components/AdvisoryDisplay';
 import InfoPanel from './components/InfoPanel';
@@ -14,11 +15,13 @@ export default function AirGuardApp() {
   const [darkMode, setDarkMode] = useState(false);
   const [currentMode, setCurrentMode] = useState('user');
   const [selectedCity, setSelectedCity] = useState(CITIES[0]);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   
   // Form State
-  const [activeTab, setActiveTab] = useState('personal'); // 'personal' or 'health'
+  const [userName, setUserName] = useState('');
+  const [userAge, setUserAge] = useState('');
   const [userRole, setUserRole] = useState('student');
-  const [customRole, setCustomRole] = useState('');
+  const [institutionName, setInstitutionName] = useState('');
   const [selectedConditions, setSelectedConditions] = useState<string[]>(['none']);
   const [isGenerated, setIsGenerated] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -68,93 +71,109 @@ export default function AirGuardApp() {
   };
 
   const handleGenerate = () => {
+    if (!userName || !userAge) {
+      alert("Please complete your Identity details (Name & Age).");
+      return;
+    }
     setLoading(true);
     setTimeout(() => {
       setIsGenerated(true);
       setLoading(false);
-    }, 1200);
+    }, 1500);
   };
 
-  const advisory = generateAdvisory(aqiData, selectedConditions, userRole);
+  const analysis = getRoleBasedAnalysis(aqiData, userRole, institutionName);
   
   // Theme Styles
   const mainBg = darkMode ? 'bg-neutral-950 text-white' : 'bg-blue-50 text-slate-900';
   const cardBg = darkMode ? 'bg-stone-900 border-stone-800' : 'bg-white border-blue-100';
 
   return (
-    <div className={`min-h-screen transition-colors duration-500 font-sans ${mainBg}`}>
+    <div className={`min-h-screen flex transition-colors duration-500 font-sans ${mainBg}`}>
       
-      <Header 
-        darkMode={darkMode} 
-        setDarkMode={setDarkMode}
+      {/* --- SIDEBAR --- */}
+      <Sidebar 
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
         currentMode={currentMode}
         setCurrentMode={setCurrentMode}
-        selectedCity={selectedCity}
-        setSelectedCity={setSelectedCity}
+        darkMode={darkMode}
+        setDarkMode={setDarkMode}
       />
 
-      {/* --- MODE SPECIFIC BANNERS --- */}
-      {currentMode === 'dev' && (
-        <div className="bg-amber-500/10 border-b border-amber-500/50 p-2 text-center">
-            <p className="text-amber-600 dark:text-amber-400 text-xs font-mono font-bold flex items-center justify-center gap-2">
-                <Hammer className="w-3 h-3" />
-                DEVELOPER MODE ACTIVE: DEBUGGING & PROGRESS OVERLAY ENABLED
-            </p>
-        </div>
-      )}
-      {currentMode === 'gov' && (
-        <div className="bg-blue-900 text-white p-2 text-center">
-            <p className="text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
-                <Building2 className="w-3 h-3" />
-                Official Government Portal - Restricted Access
-            </p>
-        </div>
-      )}
-
-      {/* --- MAIN CONTENT --- */}
-      <main className="max-w-7xl mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
+      {/* --- MAIN CONTENT AREA --- */}
+      <div className="flex-1 flex flex-col h-screen overflow-y-auto relative">
         
-        {/* LEFT COLUMN: INPUTS */}
-        <div className="lg:col-span-5 space-y-6">
-          <ProfileForm 
-            cardStyles={cardBg}
-            darkMode={darkMode}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            userRole={userRole}
-            setUserRole={setUserRole}
-            customRole={customRole}
-            setCustomRole={setCustomRole}
-            selectedConditions={selectedConditions}
-            handleConditionToggle={handleConditionToggle}
-            handleGenerate={handleGenerate}
-            loading={loading}
-          />
-        </div>
-
-        {/* RIGHT COLUMN: RESULTS */}
-        <div className="lg:col-span-7">
-          <AdvisoryDisplay 
-            isGenerated={isGenerated}
-            aqiData={aqiData}
-            selectedCity={selectedCity}
-            forecast={forecast}
-            advisory={advisory}
-            darkMode={darkMode}
-            cardStyles={cardBg}
-          />
-        </div>
-
-        {/* --- BOTTOM SECTION: Info Consoles --- */}
-        <InfoPanel 
-          currentMode={currentMode}
-          userRole={userRole}
-          selectedCity={selectedCity}
-          aqiData={aqiData}
+        <Header 
           darkMode={darkMode}
+          currentMode={currentMode}
+          selectedCity={selectedCity}
+          setSelectedCity={setSelectedCity}
         />
 
-      </main>
+        {/* Banners */}
+        {currentMode === 'dev' && (
+          <div className="bg-amber-500/10 border-b border-amber-500/50 p-2 text-center mx-6 mt-2 rounded-lg">
+              <p className="text-amber-600 dark:text-amber-400 text-xs font-mono font-bold flex items-center justify-center gap-2">
+                  <Hammer className="w-3 h-3" />
+                  DEVELOPER MODE ACTIVE
+              </p>
+          </div>
+        )}
+
+        {/* Content Body */}
+        <main className="flex-1 p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
+          
+          {/* LEFT COLUMN: INPUTS */}
+          <div className="lg:col-span-5 space-y-6">
+            <ProfileForm 
+              cardStyles={cardBg}
+              darkMode={darkMode}
+              userRole={userRole}
+              setUserRole={setUserRole}
+              userName={userName}
+              setUserName={setUserName}
+              userAge={userAge}
+              setUserAge={setUserAge}
+              institutionName={institutionName}
+              setInstitutionName={setInstitutionName}
+              selectedConditions={selectedConditions}
+              handleConditionToggle={handleConditionToggle}
+              handleGenerate={handleGenerate}
+              loading={loading}
+            />
+          </div>
+
+          {/* RIGHT COLUMN: RESULTS */}
+          <div className="lg:col-span-7">
+            <AdvisoryDisplay 
+              isGenerated={isGenerated}
+              loading={loading}
+              aqiData={aqiData}
+              forecast={forecast}
+              analysis={analysis}
+              darkMode={darkMode}
+              cardStyles={cardBg}
+              userName={userName}
+              userAge={userAge}
+              userRole={userRole}
+              institutionName={institutionName}
+            />
+          </div>
+
+          {/* --- BOTTOM SECTION: Info Consoles --- */}
+          <InfoPanel 
+            currentMode={currentMode}
+            userRole={userRole}
+            userAge={userAge}
+            userName={userName}
+            selectedCity={selectedCity}
+            aqiData={aqiData}
+            darkMode={darkMode}
+          />
+
+        </main>
+      </div>
     </div>
   );
 }
