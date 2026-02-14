@@ -1,0 +1,3 @@
+AirGuard is like a smart companion for anyone living in a city where the air isn't always clear. We know that looking at complicated graphs or scientific numbers doesn't really help you plan your day. That’s why we keep it simple.
+
+Instead of just showing you data, AirGuard tells you exactly what steps to take. It looks at the air quality and your specific needs to give you plain advice—like when it’s safe to take a walk, when you should stay indoors, or if you need extra protection. It’s all about taking the guesswork out of pollution so you and your family can stay healthy without the stress.
