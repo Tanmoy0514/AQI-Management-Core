@@ -27,10 +27,10 @@ export const DISEASES: Disease[] = [
   { id: 'allergies', label: 'Seasonal Allergies' },
 ];
 
-export const MVP_MODES: Mode[] = [
+export const MODES: Mode[] = [
   { id: 'user', label: 'User View', icon: User },
-  { id: 'dev', label: 'Developer', icon: Terminal },
-  { id: 'gov', label: 'Government', icon: Building2 },
+  { id: 'dev', label: 'Developer View', icon: Terminal },
+  { id: 'gov', label: 'Government View', icon: Building2 },
 ];
 
 export const THEMES: Record<string, { cardBg: string; cardBorder: string; font: string; accent: string }> = {

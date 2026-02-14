@@ -1,13 +1,12 @@
 # Run and deploy your app
 
-This version is one of the prioneer version of final AQI web application
+This is one of the improved version.
 
 This contains everything you need to run your app locally.
 
 ## Run Locally
 
 **Prerequisites:**  Node.js
-
 
 1. Install dependencies:
    `npm install`

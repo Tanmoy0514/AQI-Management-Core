@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CITIES } from './constants';
 import { AQIData, ForecastItem } from './types';
 import { generateAdvisory } from './utils';
+import { Hammer, Building2 } from 'lucide-react';
 
 import Header from './components/Header';
 import ProfileForm from './components/ProfileForm';
@@ -11,7 +12,7 @@ import InfoPanel from './components/InfoPanel';
 export default function AirGuardApp() {
   // State
   const [darkMode, setDarkMode] = useState(false);
-  const [mvpMode, setMvpMode] = useState('user');
+  const [currentMode, setCurrentMode] = useState('user');
   const [selectedCity, setSelectedCity] = useState(CITIES[0]);
   
   // Form State
@@ -75,20 +76,40 @@ export default function AirGuardApp() {
   };
 
   const advisory = generateAdvisory(aqiData, selectedConditions, userRole);
-  const themeStyles = darkMode ? 'bg-slate-950 text-white' : 'bg-blue-50 text-slate-900';
-  const cardStyles = darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-blue-100';
+  
+  // Theme Styles
+  const mainBg = darkMode ? 'bg-neutral-950 text-white' : 'bg-blue-50 text-slate-900';
+  const cardBg = darkMode ? 'bg-stone-900 border-stone-800' : 'bg-white border-blue-100';
 
   return (
-    <div className={`min-h-screen transition-colors duration-500 font-sans ${themeStyles}`}>
+    <div className={`min-h-screen transition-colors duration-500 font-sans ${mainBg}`}>
       
       <Header 
         darkMode={darkMode} 
         setDarkMode={setDarkMode}
-        mvpMode={mvpMode}
-        setMvpMode={setMvpMode}
+        currentMode={currentMode}
+        setCurrentMode={setCurrentMode}
         selectedCity={selectedCity}
         setSelectedCity={setSelectedCity}
       />
+
+      {/* --- MODE SPECIFIC BANNERS --- */}
+      {currentMode === 'dev' && (
+        <div className="bg-amber-500/10 border-b border-amber-500/50 p-2 text-center">
+            <p className="text-amber-600 dark:text-amber-400 text-xs font-mono font-bold flex items-center justify-center gap-2">
+                <Hammer className="w-3 h-3" />
+                DEVELOPER MODE ACTIVE: DEBUGGING & PROGRESS OVERLAY ENABLED
+            </p>
+        </div>
+      )}
+      {currentMode === 'gov' && (
+        <div className="bg-blue-900 text-white p-2 text-center">
+            <p className="text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+                <Building2 className="w-3 h-3" />
+                Official Government Portal - Restricted Access
+            </p>
+        </div>
+      )}
 
       {/* --- MAIN CONTENT --- */}
       <main className="max-w-7xl mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -96,7 +117,7 @@ export default function AirGuardApp() {
         {/* LEFT COLUMN: INPUTS */}
         <div className="lg:col-span-5 space-y-6">
           <ProfileForm 
-            cardStyles={cardStyles}
+            cardStyles={cardBg}
             darkMode={darkMode}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
@@ -120,12 +141,13 @@ export default function AirGuardApp() {
             forecast={forecast}
             advisory={advisory}
             darkMode={darkMode}
-            cardStyles={cardStyles}
+            cardStyles={cardBg}
           />
         </div>
 
         {/* --- BOTTOM SECTION: Info Consoles --- */}
         <InfoPanel 
+          currentMode={currentMode}
           userRole={userRole}
           selectedCity={selectedCity}
           aqiData={aqiData}
