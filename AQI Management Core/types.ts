@@ -1,46 +1,55 @@
 import { LucideIcon } from 'lucide-react';
 import { ReactNode } from 'react';
 
-export interface CityData {
+export interface City {
   name: string;
+  lat: number;
+  lon: number;
+  baseAQI: number;
+}
+
+export interface Role {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+}
+
+export interface Disease {
+  id: string;
+  label: string;
+}
+
+export interface Mode {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+}
+
+export interface AQIData {
   aqi: number;
   pm25: number;
   temp: number;
-  humidity: number;
-  main: string;
-  trend: string;
 }
 
-export type CityKey = 'DELHI' | 'KOLKATA' | 'MUMBAI' | 'AHMEDABAD' | 'CHENNAI';
+export interface ForecastItem {
+  day: string;
+  aqi: number;
+}
 
-export interface ThemeConfig {
+export interface Advisory {
+  mask: string;
+  maskType: string;
+  timeLimit: string;
+  safeTime: string;
+  hasRisk: boolean;
+  isOutdoor: boolean;
+}
+
+export interface ThemeColors {
   bg: string;
   text: string;
-  cardBg: string;
-  cardBorder: string;
-  accent: string;
-  highlight: string;
-  nav: string;
-  font: string;
-  button: string;
-}
-
-export type ModeKey = 'USER' | 'DEV' | 'GOV';
-
-export interface BoxProps {
-  title: string;
-  icon: LucideIcon;
-  mode: ModeKey;
-  children: ReactNode;
-  color: string;
-  devData?: Record<string, string | number | string[]>;
-  govAction?: string;
-  onDetailClick?: () => void;
-  detailLabel?: string;
-}
-
-export interface ModalProps {
-  onClose: () => void;
+  border: string;
+  label: string;
 }
 
 export interface GlitchTextProps {
@@ -51,14 +60,35 @@ export interface GlitchTextProps {
 export interface SentinelBoxProps {
   title: string;
   icon: LucideIcon;
-  mode: ModeKey;
+  mode: string;
   data: ReactNode;
-  devData?: Record<string, string | number | string[]>;
+  devData?: Record<string, any>;
   govData?: { actions: string[] };
-  impactLevel?: 'HIGH' | 'MED' | 'LOW';
+  impactLevel?: string;
 }
 
 export interface AIAgentProps {
-  mode: ModeKey;
+  mode: string;
   city: string;
 }
+
+export type CityKey = string;
+export type CityData = City;
+
+export interface BoxProps {
+  title: string;
+  icon: LucideIcon;
+  mode: string;
+  children?: ReactNode;
+  color: string;
+  devData?: Record<string, any>;
+  govAction?: string;
+  onDetailClick?: () => void;
+  detailLabel?: string;
+}
+
+export interface ModalProps {
+  onClose: () => void;
+}
+
+export type ModeKey = 'USER' | 'DEV' | 'GOV';

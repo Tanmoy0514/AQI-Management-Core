@@ -1,53 +1,40 @@
-import { CityData, CityKey, ModeKey, ThemeConfig } from './types';
+import { GraduationCap, Zap, User, Briefcase, Sun, Info, Terminal, Building2 } from 'lucide-react';
+import { City, Role, Disease, Mode } from './types';
 
-export const API_CONFIG = {
-  GOOGLE_MAPS_KEY: "", 
-  OPENWEATHER_KEY: "", 
-  AQICN_TOKEN: ""      
-};
+export const CITIES: City[] = [
+  { name: 'Delhi', lat: 28.6139, lon: 77.2090, baseAQI: 380 },
+  { name: 'Kolkata', lat: 22.5726, lon: 88.3639, baseAQI: 220 },
+  { name: 'Mumbai', lat: 19.0760, lon: 72.8777, baseAQI: 150 },
+  { name: 'Chennai', lat: 13.0827, lon: 80.2707, baseAQI: 95 },
+  { name: 'Ahmedabad', lat: 23.0225, lon: 72.5714, baseAQI: 180 },
+];
 
-export const CITIES: Record<CityKey, CityData> = {
-  DELHI: { name: 'Delhi', aqi: 412, pm25: 380, temp: 18, humidity: 45, main: 'PM2.5', trend: 'UP' },
-  KOLKATA: { name: 'Kolkata', aqi: 185, pm25: 140, temp: 26, humidity: 70, main: 'NO2', trend: 'STABLE' },
-  MUMBAI: { name: 'Mumbai', aqi: 152, pm25: 85, temp: 28, humidity: 65, main: 'PM10', trend: 'DOWN' },
-  AHMEDABAD: { name: 'Ahmedabad', aqi: 210, pm25: 110, temp: 32, humidity: 30, main: 'O3', trend: 'UP' },
-  CHENNAI: { name: 'Chennai', aqi: 85, pm25: 40, temp: 29, humidity: 80, main: 'CO', trend: 'STABLE' }
-};
+export const ROLES: Role[] = [
+  { id: 'student', label: 'Student', icon: GraduationCap },
+  { id: 'athlete', label: 'Athlete/Runner', icon: Zap },
+  { id: 'outdoor', label: 'Outdoor Worker', icon: User },
+  { id: 'office', label: 'Office Worker', icon: Briefcase },
+  { id: 'farmer', label: 'Farmer', icon: Sun },
+  { id: 'other', label: 'Others', icon: Info },
+];
 
-export const MODES: ModeKey[] = ['USER', 'DEV', 'GOV'];
+export const DISEASES: Disease[] = [
+  { id: 'none', label: 'None / Healthy' },
+  { id: 'asthma', label: 'Asthma' },
+  { id: 'copd', label: 'COPD (Lung Disease)' },
+  { id: 'bronchitis', label: 'Chronic Bronchitis' },
+  { id: 'heart', label: 'Heart Disease' },
+  { id: 'allergies', label: 'Seasonal Allergies' },
+];
 
-export const THEMES: Record<ModeKey, ThemeConfig> = {
-  USER: {
-    bg: "bg-gradient-to-br from-sky-50 via-white to-orange-50",
-    text: "text-slate-800",
-    cardBg: "bg-white/90 backdrop-blur-md shadow-xl border-white/50",
-    cardBorder: "border-transparent",
-    accent: "text-blue-600",
-    highlight: "bg-blue-600 text-white",
-    nav: "bg-white/80 border-b border-slate-200",
-    font: "font-sans",
-    button: "bg-white shadow-md hover:scale-105 text-blue-600"
-  },
-  DEV: {
-    bg: "bg-[#0d1117]",
-    text: "text-[#c9d1d9]",
-    cardBg: "bg-[#161b22]",
-    cardBorder: "border-[#30363d]",
-    accent: "text-[#58a6ff]",
-    highlight: "bg-[#238636] text-white",
-    nav: "bg-[#161b22] border-b border-[#30363d]",
-    font: "font-mono",
-    button: "bg-[#21262d] border border-[#30363d] text-[#c9d1d9]"
-  },
-  GOV: {
-    bg: "bg-slate-50",
-    text: "text-slate-900",
-    cardBg: "bg-white shadow-sm border border-slate-300",
-    cardBorder: "border-slate-300",
-    accent: "text-slate-900",
-    highlight: "bg-slate-900 text-white",
-    nav: "bg-white border-b border-slate-300 shadow-sm",
-    font: "font-serif",
-    button: "bg-slate-200 border border-slate-400 text-slate-900 hover:bg-slate-300"
-  }
+export const MVP_MODES: Mode[] = [
+  { id: 'user', label: 'User View', icon: User },
+  { id: 'dev', label: 'Developer', icon: Terminal },
+  { id: 'gov', label: 'Government', icon: Building2 },
+];
+
+export const THEMES: Record<string, { cardBg: string; cardBorder: string; font: string; accent: string }> = {
+  USER: { cardBg: 'bg-white', cardBorder: 'border-slate-100', font: 'font-sans', accent: 'text-blue-500' },
+  DEV: { cardBg: 'bg-[#0d1117]', cardBorder: 'border-green-900', font: 'font-mono', accent: 'text-green-500' },
+  GOV: { cardBg: 'bg-slate-50', cardBorder: 'border-red-200', font: 'font-serif', accent: 'text-red-600' }
 };
