@@ -6,79 +6,35 @@ import ReportView from './components/user/ReportView';
 import DeveloperConsole from './components/DeveloperConsole';
 import GovernmentPortal from './components/GovernmentPortal';
 import { CITIES } from './constants';
-import { AQIData, ForecastDay } from './types';
+import { useSimulation } from './hooks/useSimulation';
+import { useUserProfile } from './hooks/useUserProfile';
 
 export default function App() {
-  // State
+  // Navigation & Theme State
   const [darkMode, setDarkMode] = useState(false);
   const [currentMode, setCurrentMode] = useState('user');
   const [currentView, setCurrentView] = useState('input'); // 'input' or 'report'
   const [selectedCity, setSelectedCity] = useState(CITIES[0]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  
-  // Form State
-  const [userName, setUserName] = useState('');
-  const [userAge, setUserAge] = useState('');
-  const [userRole, setUserRole] = useState('student');
-  const [institutionName, setInstitutionName] = useState('');
-  const [selectedConditions, setSelectedConditions] = useState(['none']);
-  const [loading, setLoading] = useState(false);
-
-  // Data State
-  const [aqiData, setAqiData] = useState<AQIData | null>(null);
-  const [forecast, setForecast] = useState<ForecastDay[]>([]);
-  
-  // Dev Mode State
   const [showDevPopup, setShowDevPopup] = useState(true);
 
-  // Simulate Data Fetching when City changes
-  useEffect(() => {
-    // Simulate API fetch for current city
-    const randomFluctuation = Math.floor(Math.random() * 40) - 20;
-    const currentAQI = Math.max(20, selectedCity.baseAQI + randomFluctuation);
-    
-    setAqiData({
-      aqi: currentAQI,
-      pm25: currentAQI / 2.5,
-      temp: 32 + (Math.random() * 4 - 2),
-    });
+  // Logic Hooks
+  const { aqiData, forecast } = useSimulation(selectedCity);
+  const {
+    userName, setUserName,
+    userAge, setUserAge,
+    userRole, setUserRole,
+    institutionName, setInstitutionName,
+    selectedConditions, handleConditionToggle,
+    loading, setLoading
+  } = useUserProfile();
 
-    // Simulate 7-Day Forecast with Real Day Names
-    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const todayIndex = new Date().getDay();
-    
-    const next7Days = Array.from({ length: 7 }).map((_, i) => {
-      const dayFluctuation = Math.floor(Math.random() * 150) - 50; 
-      const dayAQI = Math.max(30, Math.min(500, selectedCity.baseAQI + dayFluctuation));
-      const dayLabel = i === 0 ? 'Today' : days[(todayIndex + i) % 7];
-
-      return {
-        day: dayLabel,
-        aqi: dayAQI,
-      };
-    });
-    setForecast(next7Days);
-  }, [selectedCity]);
-
-  // Dev Popup reset
+  // Reset Dev Popup when entering Dev mode
   useEffect(() => {
     if (currentMode === 'dev') {
         setShowDevPopup(true);
     }
   }, [currentMode]);
-
-  const handleConditionToggle = (id: string) => {
-    if (id === 'none') {
-      setSelectedConditions(['none']);
-      return;
-    }
-    const newConditions = selectedConditions.filter(c => c !== 'none');
-    if (selectedConditions.includes(id)) {
-      setSelectedConditions(newConditions.filter(c => c !== id));
-    } else {
-      setSelectedConditions([...newConditions, id]);
-    }
-  };
 
   const handleGenerate = () => {
     if (!userName || !userAge) {

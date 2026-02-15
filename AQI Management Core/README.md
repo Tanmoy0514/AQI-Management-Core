@@ -1,8 +1,4 @@
-# Run and deploy your app
-
-One of the most stable and improved version.
-
-This contains everything you need to run your app locally.
+Easy to debug and edit files quickly
 
 ## Run Locally
 
