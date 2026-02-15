@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { Hammer } from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import UserInput from './components/user/UserInput';
 import ReportView from './components/user/ReportView';
-import DeveloperConsole from './components/DeveloperConsole';
-import GovernmentPortal from './components/GovernmentPortal';
+import DashboardWidgets from './components/DashboardWidgets';
 import { CITIES } from './constants';
 import { useSimulation } from './hooks/useSimulation';
 import { useUserProfile } from './hooks/useUserProfile';
@@ -16,7 +16,6 @@ export default function App() {
   const [currentView, setCurrentView] = useState('input'); // 'input' or 'report'
   const [selectedCity, setSelectedCity] = useState(CITIES[0]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [showDevPopup, setShowDevPopup] = useState(true);
 
   // Logic Hooks
   const { aqiData, forecast } = useSimulation(selectedCity);
@@ -28,13 +27,6 @@ export default function App() {
     selectedConditions, handleConditionToggle,
     loading, setLoading
   } = useUserProfile();
-
-  // Reset Dev Popup when entering Dev mode
-  useEffect(() => {
-    if (currentMode === 'dev') {
-        setShowDevPopup(true);
-    }
-  }, [currentMode]);
 
   const handleGenerate = () => {
     if (!userName || !userAge) {
@@ -89,51 +81,48 @@ export default function App() {
             darkMode={darkMode}
         />
 
+        {/* Banners */}
+        {currentMode === 'dev' && (
+          <div className="bg-amber-500/10 border-b border-amber-500/50 p-2 text-center mx-6 mt-2 rounded-lg">
+              <p className="text-amber-600 dark:text-amber-400 text-xs font-mono font-bold flex items-center justify-center gap-2">
+                  <Hammer className="w-3 h-3" />
+                  DEVELOPER MODE ACTIVE
+              </p>
+          </div>
+        )}
+
         {/* --- DYNAMIC MAIN CONTENT --- */}
         <main className="flex-1 p-6 flex flex-col">
           
-          {/* USER DASHBOARD */}
-          {currentMode === 'user' && (
-            <>
-              {currentView === 'input' && (
-                <UserInput 
-                  userName={userName} setUserName={setUserName}
-                  userAge={userAge} setUserAge={setUserAge}
-                  userRole={userRole} setUserRole={setUserRole}
-                  institutionName={institutionName} setInstitutionName={setInstitutionName}
-                  selectedConditions={selectedConditions} handleConditionToggle={handleConditionToggle}
-                  loading={loading} handleGenerate={handleGenerate}
-                  darkMode={darkMode} cardBg={cardBg} inputBg={inputBg} activeInputBg={activeInputBg}
-                />
-              )}
-              {currentView === 'report' && (
-                <ReportView 
-                  userName={userName}
-                  userAge={userAge}
-                  userRole={userRole}
-                  institutionName={institutionName}
-                  aqiData={aqiData}
-                  forecast={forecast}
-                  darkMode={darkMode}
-                  cardBg={cardBg}
-                />
-              )}
-            </>
-          )}
-
-          {/* DEVELOPER CONSOLE */}
-          {currentMode === 'dev' && (
-            <DeveloperConsole 
-                darkMode={darkMode} 
-                showDevPopup={showDevPopup} 
-                setShowDevPopup={setShowDevPopup} 
+          {/* VIEW 1: INPUT FORM */}
+          {currentView === 'input' && (
+            <UserInput 
+              userName={userName} setUserName={setUserName}
+              userAge={userAge} setUserAge={setUserAge}
+              userRole={userRole} setUserRole={setUserRole}
+              institutionName={institutionName} setInstitutionName={setInstitutionName}
+              selectedConditions={selectedConditions} handleConditionToggle={handleConditionToggle}
+              loading={loading} handleGenerate={handleGenerate}
+              darkMode={darkMode} cardBg={cardBg} inputBg={inputBg} activeInputBg={activeInputBg}
             />
           )}
 
-          {/* GOVERNMENT PORTAL */}
-          {currentMode === 'gov' && (
-             <GovernmentPortal darkMode={darkMode} />
+          {/* VIEW 2: REPORT DASHBOARD */}
+          {currentView === 'report' && (
+            <ReportView 
+              userName={userName}
+              userAge={userAge}
+              userRole={userRole}
+              institutionName={institutionName}
+              aqiData={aqiData}
+              forecast={forecast}
+              darkMode={darkMode}
+              cardBg={cardBg}
+            />
           )}
+
+          {/* --- BOTTOM SECTION (ALWAYS VISIBLE - Dual Console) --- */}
+          <DashboardWidgets darkMode={darkMode} aqiData={aqiData} />
 
           {/* Footer (Common) */}
           <div className="text-center mt-8 pb-2 opacity-30 text-[10px]">

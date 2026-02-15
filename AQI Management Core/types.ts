@@ -5,7 +5,7 @@ export interface City {
   lat: number;
   lon: number;
   baseAQI: number;
-  state: string;
+  state?: string; // Made optional as provided source removed state data
 }
 
 export interface Role {
