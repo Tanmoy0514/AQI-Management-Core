@@ -12,8 +12,9 @@ export const useSimulation = (selectedCity: City) => {
     
     setAqiData({
       aqi: currentAQI,
-      pm25: currentAQI / 2.5,
-      temp: 32 + (Math.random() * 4 - 2),
+      pm25: Math.floor(currentAQI / 2.5),
+      temp: Math.floor(32 + (Math.random() * 4 - 2)),
+      humidity: Math.floor(40 + Math.random() * 20)
     });
 
     // Simulate 7-Day Forecast with Real Day Names

@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { Construction } from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import UserInput from './components/user/UserInput';
 import ReportView from './components/user/ReportView';
 import DeveloperConsole from './components/DeveloperConsole';
 import GovernmentPortal from './components/GovernmentPortal';
+import Chatbot from './components/Chatbot';
 import { CITIES } from './constants';
 import { useSimulation } from './hooks/useSimulation';
 import { useUserProfile } from './hooks/useUserProfile';
+import { useChatbot } from './hooks/useChatbot';
 
 export default function App() {
   // Navigation & Theme State
@@ -28,6 +31,8 @@ export default function App() {
     selectedConditions, handleConditionToggle,
     loading, setLoading
   } = useUserProfile();
+
+  const chatbotProps = useChatbot(userName, aqiData, selectedCity);
 
   // Reset Dev Popup when entering Dev mode
   useEffect(() => {
@@ -90,7 +95,7 @@ export default function App() {
         />
 
         {/* --- DYNAMIC MAIN CONTENT --- */}
-        <main className="flex-1 p-6 flex flex-col">
+        <main className="flex-1 p-6 flex flex-col relative">
           
           {/* USER DASHBOARD */}
           {currentMode === 'user' && (
@@ -135,6 +140,15 @@ export default function App() {
              <GovernmentPortal darkMode={darkMode} />
           )}
 
+          {/* FALLBACK FOR UNKNOWN MODES */}
+          {currentMode !== 'user' && currentMode !== 'dev' && currentMode !== 'gov' && (
+            <div className="flex flex-col items-center justify-center h-full opacity-40">
+                <Construction className="w-16 h-16 mb-4" />
+                <h3 className="text-xl font-bold">Portal Under Maintenance</h3>
+                <p>Please switch to User Dashboard.</p>
+            </div>
+          )}
+
           {/* Footer (Common) */}
           <div className="text-center mt-8 pb-2 opacity-30 text-[10px]">
              © Hack The Galaxy 2026
@@ -142,6 +156,11 @@ export default function App() {
 
         </main>
       </div>
+
+      {/* CHATBOT (User Mode Only) */}
+      {currentMode === 'user' && (
+        <Chatbot {...chatbotProps} darkMode={darkMode} />
+      )}
     </div>
   );
 }

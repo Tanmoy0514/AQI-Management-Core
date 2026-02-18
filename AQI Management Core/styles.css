@@ -15,6 +15,11 @@
   to { transform: translateX(0); opacity: 1; }
 }
 
+@keyframes slideInBottom {
+  from { transform: translateY(2.5rem); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
 @keyframes zoomIn {
   from { transform: scale(0.95); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
@@ -43,7 +48,13 @@
   animation-name: slideInRight;
 }
 
-.zoom-in {
+.slide-in-from-bottom-8,
+.slide-in-from-bottom-10 {
+  animation-name: slideInBottom;
+}
+
+.zoom-in,
+.zoom-in-95 {
   animation-name: zoomIn;
 }
 

@@ -30,6 +30,7 @@ export interface AQIData {
   aqi: number;
   pm25: number;
   temp: number;
+  humidity: number;
 }
 
 export interface ForecastDay {
@@ -45,4 +46,10 @@ export interface AnalysisAdvice {
   primaryAction: string;
   commute: string;
   specific: string;
+}
+
+export interface ChatMessage {
+  id: number;
+  type: 'bot' | 'user';
+  text: string;
 }
