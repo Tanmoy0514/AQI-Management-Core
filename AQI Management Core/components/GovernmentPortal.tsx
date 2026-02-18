@@ -54,7 +54,7 @@ const GovernmentPortal: React.FC<GovernmentPortalProps> = ({ darkMode }) => {
              </div>
          </div>
 
-         {/* State-Wise Data Table (Simulating collection from Dev Console) */}
+         {/* State-Wise Data Table */}
          <div className={`flex-1 rounded-3xl border shadow-xl overflow-hidden flex flex-col ${darkMode ? 'bg-stone-900 border-stone-800' : 'bg-white border-slate-100'}`}>
              <div className={`p-4 border-b font-bold flex justify-between items-center ${darkMode ? 'bg-black/20 border-stone-800' : 'bg-slate-50 border-slate-200'}`}>
                  <span>State-Wise Status Report</span>

@@ -44,7 +44,7 @@ const DeveloperConsole: React.FC<DeveloperConsoleProps> = ({
              <div className="absolute top-1/2 left-1/2 w-4 h-4 bg-yellow-500 rounded-full animate-pulse"></div>
              <div className="absolute bottom-1/3 right-1/4 w-3 h-3 bg-green-500 rounded-full animate-bounce"></div>
 
-             {/* Construction Popup (Updated with Link) */}
+             {/* Construction Popup */}
              {showDevPopup && (
                  <div className="absolute z-50 animate-in zoom-in duration-300">
                      <div className="bg-yellow-400 text-black p-6 rounded-3xl shadow-2xl border-4 border-black max-w-sm text-center transform rotate-2 hover:rotate-0 transition-transform cursor-pointer">
