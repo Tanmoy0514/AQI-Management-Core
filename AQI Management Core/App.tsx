@@ -1,45 +1,63 @@
 import React, { useState, useEffect } from 'react';
-import { Construction } from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
-import UserInput from './components/user/UserInput';
-import ReportView from './components/user/ReportView';
-import DeveloperConsole from './components/DeveloperConsole';
-import GovernmentPortal from './components/GovernmentPortal';
 import Chatbot from './components/Chatbot';
-import { CITIES } from './constants';
-import { useSimulation } from './hooks/useSimulation';
-import { useUserProfile } from './hooks/useUserProfile';
-import { useChatbot } from './hooks/useChatbot';
+import InputForm from './views/user/InputForm';
+import Report from './views/user/Report';
+import DeveloperConsole from './views/DeveloperConsole';
+import GovernmentPortal from './views/GovernmentPortal';
+import { CITIES } from './data/constants';
+import { AQIData, ForecastDay, City } from './types';
 
 export default function App() {
-  // Navigation & Theme State
+  // State
   const [darkMode, setDarkMode] = useState(false);
   const [currentMode, setCurrentMode] = useState('user');
-  const [currentView, setCurrentView] = useState('input'); // 'input' or 'report'
-  const [selectedCity, setSelectedCity] = useState(CITIES[0]);
+  const [currentView, setCurrentView] = useState<'input' | 'report'>('input');
+  const [selectedCity, setSelectedCity] = useState<City>(CITIES[0]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [showDevPopup, setShowDevPopup] = useState(true);
+  
+  // Form State
+  const [userName, setUserName] = useState('');
+  const [userAge, setUserAge] = useState('');
+  const [userRole, setUserRole] = useState('student');
+  const [institutionName, setInstitutionName] = useState('');
+  const [selectedConditions, setSelectedConditions] = useState(['none']);
+  const [loading, setLoading] = useState(false);
 
-  // Logic Hooks
-  const { aqiData, forecast } = useSimulation(selectedCity);
-  const {
-    userName, setUserName,
-    userAge, setUserAge,
-    userRole, setUserRole,
-    institutionName, setInstitutionName,
-    selectedConditions, handleConditionToggle,
-    loading, setLoading
-  } = useUserProfile();
-
-  const chatbotProps = useChatbot(userName, aqiData, selectedCity);
-
-  // Reset Dev Popup when entering Dev mode
+  // Data State
+  const [aqiData, setAqiData] = useState<AQIData | null>(null);
+  const [forecast, setForecast] = useState<ForecastDay[]>([]);
+  
+  // Simulate Data Fetching when City changes
   useEffect(() => {
-    if (currentMode === 'dev') {
-        setShowDevPopup(true);
-    }
-  }, [currentMode]);
+    // Simulate API fetch for current city
+    const randomFluctuation = Math.floor(Math.random() * 40) - 20;
+    const currentAQI = Math.max(20, selectedCity.baseAQI + randomFluctuation);
+    
+    setAqiData({
+      aqi: currentAQI,
+      pm25: Math.floor(currentAQI / 2.5),
+      temp: Math.floor(32 + (Math.random() * 4 - 2)),
+      humidity: Math.floor(40 + Math.random() * 20)
+    });
+
+    // Simulate 7-Day Forecast with Real Day Names
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const todayIndex = new Date().getDay();
+    
+    const next7Days = Array.from({ length: 7 }).map((_, i) => {
+      const dayFluctuation = Math.floor(Math.random() * 150) - 50; 
+      const dayAQI = Math.max(30, Math.min(500, selectedCity.baseAQI + dayFluctuation));
+      const dayLabel = i === 0 ? 'Today' : days[(todayIndex + i) % 7];
+
+      return {
+        day: dayLabel,
+        aqi: dayAQI,
+      };
+    });
+    setForecast(next7Days);
+  }, [selectedCity]);
 
   const handleGenerate = () => {
     if (!userName || !userAge) {
@@ -56,12 +74,10 @@ export default function App() {
   const handleBackToInput = () => {
     setCurrentView('input');
   };
-
+  
   // Theme Styles
   const mainBg = darkMode ? 'bg-neutral-950 text-white' : 'bg-blue-50 text-slate-900';
   const cardBg = darkMode ? 'bg-stone-900 border-stone-800' : 'bg-white border-blue-100';
-  const headerBg = darkMode ? 'bg-neutral-900/90' : 'bg-white/90';
-  const sidebarBg = darkMode ? 'bg-neutral-900 border-stone-800' : 'bg-white border-slate-200';
   const inputBg = darkMode ? 'bg-stone-800 hover:bg-stone-700 text-white border-stone-700' : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-transparent';
   const activeInputBg = darkMode ? 'bg-stone-700 border-amber-500 text-amber-400' : 'bg-blue-50 border-blue-500 text-blue-600';
 
@@ -72,11 +88,10 @@ export default function App() {
       <Sidebar 
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
-        darkMode={darkMode}
-        setDarkMode={setDarkMode}
         currentMode={currentMode}
         setCurrentMode={setCurrentMode}
-        sidebarBg={sidebarBg}
+        darkMode={darkMode}
+        setDarkMode={setDarkMode}
       />
 
       {/* --- MAIN CONTENT AREA --- */}
@@ -84,70 +99,52 @@ export default function App() {
         
         {/* Header */}
         <Header 
-            currentMode={currentMode}
-            userName={userName}
-            currentView={currentView}
-            handleBackToInput={handleBackToInput}
-            selectedCity={selectedCity}
-            setSelectedCity={setSelectedCity}
-            headerBg={headerBg}
-            darkMode={darkMode}
+          currentMode={currentMode}
+          userName={userName}
+          currentView={currentView}
+          handleBackToInput={handleBackToInput}
+          selectedCity={selectedCity}
+          setSelectedCity={setSelectedCity}
+          darkMode={darkMode}
         />
 
         {/* --- DYNAMIC MAIN CONTENT --- */}
-        <main className="flex-1 p-6 flex flex-col relative">
+        <main className="flex-1 p-6 flex flex-col">
           
           {/* USER DASHBOARD */}
           {currentMode === 'user' && (
             <>
               {currentView === 'input' && (
-                <UserInput 
+                <InputForm 
                   userName={userName} setUserName={setUserName}
                   userAge={userAge} setUserAge={setUserAge}
                   userRole={userRole} setUserRole={setUserRole}
                   institutionName={institutionName} setInstitutionName={setInstitutionName}
-                  selectedConditions={selectedConditions} handleConditionToggle={handleConditionToggle}
+                  selectedConditions={selectedConditions} setSelectedConditions={setSelectedConditions}
                   loading={loading} handleGenerate={handleGenerate}
                   darkMode={darkMode} cardBg={cardBg} inputBg={inputBg} activeInputBg={activeInputBg}
                 />
               )}
               {currentView === 'report' && (
-                <ReportView 
-                  userName={userName}
-                  userAge={userAge}
-                  userRole={userRole}
-                  institutionName={institutionName}
-                  aqiData={aqiData}
-                  forecast={forecast}
-                  darkMode={darkMode}
-                  cardBg={cardBg}
+                <Report 
+                   userName={userName}
+                   userAge={userAge}
+                   userRole={userRole}
+                   institutionName={institutionName}
+                   aqiData={aqiData}
+                   forecast={forecast}
+                   darkMode={darkMode}
+                   cardBg={cardBg}
                 />
               )}
             </>
           )}
 
           {/* DEVELOPER CONSOLE */}
-          {currentMode === 'dev' && (
-            <DeveloperConsole 
-                darkMode={darkMode} 
-                showDevPopup={showDevPopup} 
-                setShowDevPopup={setShowDevPopup} 
-            />
-          )}
+          {currentMode === 'dev' && <DeveloperConsole darkMode={darkMode} />}
 
           {/* GOVERNMENT PORTAL */}
-          {currentMode === 'gov' && (
-             <GovernmentPortal darkMode={darkMode} />
-          )}
-
-          {/* FALLBACK FOR UNKNOWN MODES */}
-          {currentMode !== 'user' && currentMode !== 'dev' && currentMode !== 'gov' && (
-            <div className="flex flex-col items-center justify-center h-full opacity-40">
-                <Construction className="w-16 h-16 mb-4" />
-                <h3 className="text-xl font-bold">Portal Under Maintenance</h3>
-                <p>Please switch to User Dashboard.</p>
-            </div>
-          )}
+          {currentMode === 'gov' && <GovernmentPortal darkMode={darkMode} />}
 
           {/* Footer (Common) */}
           <div className="text-center mt-8 pb-2 opacity-30 text-[10px]">
@@ -157,10 +154,16 @@ export default function App() {
         </main>
       </div>
 
-      {/* CHATBOT (User Mode Only) */}
+      {/* --- CHATBOT (User Mode Only) --- */}
       {currentMode === 'user' && (
-        <Chatbot {...chatbotProps} darkMode={darkMode} />
+        <Chatbot 
+          darkMode={darkMode}
+          aqiData={aqiData}
+          selectedCity={selectedCity}
+          userName={userName}
+        />
       )}
+
     </div>
   );
 }
