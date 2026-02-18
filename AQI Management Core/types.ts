@@ -40,6 +40,8 @@ export interface ForecastDay {
 
 export interface AnalysisAdvice {
   mask: string;
+  maskNote?: string;
+  maskLayers?: string;
   riskLevel: string;
   generalAdvice: string;
   title: string;
@@ -52,4 +54,16 @@ export interface ChatMessage {
   id: number;
   type: 'bot' | 'user';
   text: string;
+}
+
+export interface MaskInfo {
+  min: number;
+  max: number;
+  name: string;
+  layers: string;
+  note: string;
+  colorClass: string;
+  textClass: string;
+  icon: LucideIcon;
+  status: string;
 }

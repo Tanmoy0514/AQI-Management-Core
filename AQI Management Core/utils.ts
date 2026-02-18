@@ -1,12 +1,22 @@
-import { AQIData, AnalysisAdvice } from './types';
+import { AQIData, AnalysisAdvice, MaskInfo } from './types';
+import { MASK_DATA } from './constants';
 
-// Helper to get color based on AQI
+// Helper to get Detailed Mask Info
+export const getMaskRecommendation = (aqi: number): MaskInfo => {
+    return MASK_DATA.find(m => aqi >= m.min && aqi <= m.max) || MASK_DATA[MASK_DATA.length - 1];
+};
+
+// Helper to get color based on AQI (Using Mask Data for consistency)
 export const getAQIColor = (aqi: number) => {
-  if (aqi <= 50) return { bg: 'bg-emerald-500', text: 'text-emerald-600', border: 'border-emerald-500', label: 'Good' };
-  if (aqi <= 100) return { bg: 'bg-yellow-400', text: 'text-yellow-600', border: 'border-yellow-400', label: 'Moderate' };
-  if (aqi <= 200) return { bg: 'bg-orange-500', text: 'text-orange-600', border: 'border-orange-500', label: 'Unhealthy' };
-  if (aqi <= 300) return { bg: 'bg-red-500', text: 'text-red-600', border: 'border-red-500', label: 'Very Unhealthy' };
-  return { bg: 'bg-purple-600', text: 'text-purple-600', border: 'border-purple-600', label: 'Hazardous' };
+  const maskInfo = getMaskRecommendation(aqi);
+  // Extract base color name from class (e.g., bg-emerald-500 -> emerald) to build border class
+  const colorName = maskInfo.colorClass.split('-')[1];
+  return { 
+      bg: maskInfo.colorClass, 
+      text: maskInfo.textClass, 
+      border: `border-${colorName}-500`, 
+      label: maskInfo.status 
+  };
 };
 
 // Analysis Logic
@@ -17,13 +27,17 @@ export const getRoleBasedAnalysis = (
 ): AnalysisAdvice | null => {
   if (!aqiData) return null;
   const aqi = aqiData.aqi;
+  const maskInfo = getMaskRecommendation(aqi);
+  
   const isSevere = aqi > 300;
   const isPoor = aqi > 200;
   const isModerate = aqi > 100;
 
   const baseAdvice = {
-      mask: isModerate ? (isSevere ? "N99/P100" : "N95") : "Cloth/Surgical",
-      riskLevel: isSevere ? "Critical" : isPoor ? "High" : isModerate ? "Moderate" : "Low",
+      mask: maskInfo.name,
+      maskNote: maskInfo.note,
+      maskLayers: maskInfo.layers,
+      riskLevel: maskInfo.status,
       generalAdvice: "Stay hydrated and monitor breathing."
   };
 

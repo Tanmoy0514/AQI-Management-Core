@@ -1,8 +1,9 @@
-##Improved A mini chatbot version to help users
+#More improved chatbot version
 
 ## Run Locally
 
 **Prerequisites:**  Node.js
+
 
 1. Install dependencies:
    `npm install`

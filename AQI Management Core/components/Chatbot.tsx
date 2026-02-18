@@ -10,6 +10,7 @@ interface ChatbotProps {
   setChatInput: (val: string) => void;
   isBotTyping: boolean;
   chatEndRef: React.RefObject<HTMLDivElement | null>;
+  chatContainerRef: React.RefObject<HTMLDivElement | null>;
   handleSendMessage: () => void;
   darkMode: boolean;
 }
@@ -20,6 +21,7 @@ const Chatbot: React.FC<ChatbotProps> = ({
   chatInput, setChatInput,
   isBotTyping,
   chatEndRef,
+  chatContainerRef,
   handleSendMessage,
   darkMode
 }) => {
@@ -30,84 +32,86 @@ const Chatbot: React.FC<ChatbotProps> = ({
 
   return (
     <>
-      {/* Chat Window */}
+      {/* Chat Window with FIX for Border and Smooth Scroll */}
       {chatOpen && (
-        <div className={`fixed bottom-24 right-6 w-80 md:w-96 rounded-3xl shadow-2xl z-[60] overflow-hidden flex flex-col animate-in slide-in-from-bottom-10 fade-in zoom-in-95
-          bg-white dark:bg-stone-900 border-2`}
-          style={{ 
-            borderImage: 'linear-gradient(to right, #3b82f6, #8b5cf6, #ec4899) 1' 
-          }}
-        >
-          {/* Header */}
-          <div className="p-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 text-white flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 bg-white/20 rounded-full backdrop-blur-sm">
-                <Bot className="w-4 h-4" />
+        <div className="fixed bottom-24 right-6 z-[60] animate-in slide-in-from-bottom-10 fade-in zoom-in-95">
+          {/* Wrapper for the Colorful Gradient Border with Rounded Corners */}
+          <div className="p-[2px] rounded-3xl bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 shadow-2xl">
+            <div className={`w-80 md:w-96 rounded-[22px] overflow-hidden flex flex-col bg-white dark:bg-stone-900`}>
+              
+              {/* Header */}
+              <div className="p-4 bg-slate-50 dark:bg-stone-800 border-b dark:border-stone-700 flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <div className="p-1.5 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-lg shadow-sm">
+                    <Bot className="w-4 h-4" />
+                  </div>
+                  <div>
+                     <h3 className={`font-bold text-sm ${darkMode ? 'text-white' : 'text-slate-800'}`}>AirGuard Assistant</h3>
+                     <p className="text-[10px] text-green-500 flex items-center gap-1 font-bold">
+                       <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"/> Online
+                     </p>
+                  </div>
+                </div>
+                <button onClick={() => setChatOpen(false)} className={`p-1 rounded-lg transition-colors ${darkMode ? 'hover:bg-stone-700 text-stone-400' : 'hover:bg-slate-200 text-slate-400'}`}>
+                  <X className="w-4 h-4" />
+                </button>
               </div>
-              <div>
-                 <h3 className="font-bold text-sm">AirGuard Assistant</h3>
-                 <p className="text-[10px] text-white/80 flex items-center gap-1">
-                   <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"/> Online
-                 </p>
-              </div>
-            </div>
-            <button onClick={() => setChatOpen(false)} className="p-1 hover:bg-white/20 rounded-lg transition-colors">
-              <X className="w-4 h-4" />
-            </button>
-          </div>
 
-          {/* Messages Area */}
-          <div className="flex-1 h-80 overflow-y-auto p-4 space-y-3 bg-slate-50 dark:bg-stone-900/50">
-            {chatMessages.map((msg) => (
-              <div key={msg.id} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-                 <div className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm
-                   ${msg.type === 'user' 
-                     ? 'bg-blue-600 text-white rounded-br-none' 
-                     : (darkMode ? 'bg-stone-800 text-slate-200 rounded-bl-none' : 'bg-white text-slate-700 border border-slate-100 rounded-bl-none')
-                   }`}
-                 >
-                   {msg.text.split('\n').map((line, i) => (
-                     <React.Fragment key={i}>
-                       {line}
-                       {i !== msg.text.split('\n').length - 1 && <br />}
-                     </React.Fragment>
-                   ))}
-                 </div>
+              {/* Messages Area */}
+              <div className="flex-1 h-80 overflow-y-auto p-4 space-y-3 bg-white dark:bg-stone-900 scroll-smooth" ref={chatContainerRef}>
+                {chatMessages.map((msg) => (
+                  <div key={msg.id} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+                     <div className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm
+                       ${msg.type === 'user' 
+                         ? 'bg-blue-600 text-white rounded-br-none' 
+                         : (darkMode ? 'bg-stone-800 text-slate-200 rounded-bl-none border border-stone-700' : 'bg-slate-50 text-slate-700 border border-slate-200 rounded-bl-none')
+                       }`}
+                     >
+                       {msg.text.split('\n').map((line, i) => (
+                         <React.Fragment key={i}>
+                           {line}
+                           {i !== msg.text.split('\n').length - 1 && <br />}
+                         </React.Fragment>
+                       ))}
+                     </div>
+                  </div>
+                ))}
+                {isBotTyping && (
+                  <div className="flex justify-start">
+                    <div className={`rounded-2xl rounded-bl-none px-4 py-3 bg-slate-50 dark:bg-stone-800 border dark:border-stone-700 flex gap-1 items-center`}>
+                      <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}/>
+                      <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}/>
+                      <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}/>
+                      <span className="text-xs ml-2 text-slate-400 flex items-center gap-1"><Search className="w-3 h-3"/> Searching...</span>
+                    </div>
+                  </div>
+                )}
+                <div ref={chatEndRef} />
               </div>
-            ))}
-            {isBotTyping && (
-              <div className="flex justify-start">
-                <div className={`rounded-2xl rounded-bl-none px-4 py-3 bg-white dark:bg-stone-800 border dark:border-stone-700 flex gap-1 items-center`}>
-                  <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}/>
-                  <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}/>
-                  <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}/>
-                  <span className="text-xs ml-2 text-slate-400 flex items-center gap-1"><Search className="w-3 h-3"/> Searching...</span>
+
+              {/* Input Area */}
+              <div className="p-3 border-t bg-slate-50 dark:bg-stone-800 dark:border-stone-700">
+                <div className="flex items-center gap-2">
+                  <input 
+                    type="text" 
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    onKeyDown={handleChatKeyDown}
+                    placeholder="Type 'Mask', 'AQI'..." 
+                    className={`flex-1 p-2.5 text-sm rounded-xl outline-none border transition-all
+                      ${darkMode ? 'bg-stone-900 border-stone-700 text-white focus:border-purple-500' : 'bg-white border-slate-200 focus:border-purple-500'}
+                    `}
+                  />
+                  <button 
+                    onClick={handleSendMessage}
+                    disabled={!chatInput.trim() || isBotTyping}
+                    className="p-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl shadow-md hover:opacity-90 active:scale-95 transition-all disabled:opacity-50 disabled:scale-100"
+                  >
+                    <Send className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
-            )}
-            <div ref={chatEndRef} />
-          </div>
 
-          {/* Input Area */}
-          <div className="p-3 border-t bg-white dark:bg-stone-900 dark:border-stone-800">
-            <div className="flex items-center gap-2">
-              <input 
-                type="text" 
-                value={chatInput}
-                onChange={(e) => setChatInput(e.target.value)}
-                onKeyDown={handleChatKeyDown}
-                placeholder="Type 'AQI', 'Health'..." 
-                className={`flex-1 p-2.5 text-sm rounded-xl outline-none border transition-all
-                  ${darkMode ? 'bg-stone-800 border-stone-700 text-white focus:border-purple-500' : 'bg-slate-50 border-slate-200 focus:border-purple-500'}
-                `}
-              />
-              <button 
-                onClick={handleSendMessage}
-                disabled={!chatInput.trim() || isBotTyping}
-                className="p-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl shadow-md hover:opacity-90 active:scale-95 transition-all disabled:opacity-50 disabled:scale-100"
-              >
-                <Send className="w-4 h-4" />
-              </button>
             </div>
           </div>
         </div>
