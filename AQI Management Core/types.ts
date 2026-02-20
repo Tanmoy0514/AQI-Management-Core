@@ -6,6 +6,7 @@ export interface City {
   lon: number;
   baseAQI: number;
   state: string;
+  trend: 'up' | 'down' | 'stable';
 }
 
 export interface Role {
@@ -26,36 +27,6 @@ export interface Mode {
   icon: LucideIcon;
 }
 
-export interface AQIData {
-  aqi: number;
-  pm25: number;
-  temp: number;
-  humidity: number;
-}
-
-export interface ForecastDay {
-  day: string;
-  aqi: number;
-}
-
-export interface AnalysisAdvice {
-  mask: string;
-  maskNote?: string;
-  maskLayers?: string;
-  riskLevel: string;
-  generalAdvice: string;
-  title: string;
-  primaryAction: string;
-  commute: string;
-  specific: string;
-}
-
-export interface ChatMessage {
-  id: number;
-  type: 'bot' | 'user';
-  text: string;
-}
-
 export interface MaskInfo {
   min: number;
   max: number;
@@ -64,6 +35,38 @@ export interface MaskInfo {
   note: string;
   colorClass: string;
   textClass: string;
+  borderClass: string;
   icon: LucideIcon;
   status: string;
+}
+
+export interface AQIData {
+  aqi: number;
+  pm25: number;
+  pm10: number;
+  o3: number;
+  no2: number;
+  temp: number;
+  humidity: number;
+  wind: number;
+}
+
+export interface ForecastDay {
+  day: string;
+  aqi: number;
+}
+
+export interface ChatMessage {
+  id: number;
+  type: 'bot' | 'user';
+  text: string;
+}
+
+export interface ThemeStyles {
+  wrapper: string;
+  card: string;
+  textMuted: string;
+  button: string;
+  immersive: boolean;
+  weatherIcon?: LucideIcon;
 }

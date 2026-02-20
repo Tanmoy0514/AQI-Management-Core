@@ -1,70 +1,65 @@
 import React from 'react';
-import { ArrowLeft, MapPin, ChevronDown } from 'lucide-react';
-import { City, Mode } from '../types';
-import { CITIES, MODES } from '../constants';
+import { MapPin, ChevronDown, ArrowLeft } from 'lucide-react';
+import { CITIES } from '../data/constants';
+import { City, ThemeStyles } from '../types';
 
 interface HeaderProps {
   currentMode: string;
   userName: string;
-  currentView: string;
+  currentView: 'input' | 'report';
   handleBackToInput: () => void;
   selectedCity: City;
   setSelectedCity: (city: City) => void;
-  headerBg: string;
   darkMode: boolean;
+  theme: ThemeStyles;
 }
 
 const Header: React.FC<HeaderProps> = ({
   currentMode,
-  userName,
   currentView,
   handleBackToInput,
   selectedCity,
   setSelectedCity,
-  headerBg,
-  darkMode
+  darkMode,
+  theme
 }) => {
+  
+  const headerClasses = darkMode ? 'border-neutral-800 bg-neutral-950/80' : 'border-slate-200 bg-white/80';
+  const cardBg = darkMode ? 'bg-neutral-900 border-neutral-800' : 'bg-white border-slate-100 shadow-sm';
 
   const getHeaderTitle = () => {
-    if (currentMode === 'user' && userName) return `${userName}'s Dashboard`;
-    return MODES.find((m: Mode) => m.id === currentMode)?.label || 'Dashboard';
+    if (currentMode === 'user') return currentView === 'input' ? 'Setup Profile' : 'Live Dashboard';
+    return 'Console';
   };
 
   return (
-    <header className={`px-6 py-4 flex justify-between items-center sticky top-0 z-40 backdrop-blur-md ${headerBg}`}>
-       <h2 className="text-xl font-bold flex items-center gap-2">
-         {currentMode === 'user' && currentView === 'report' && (
-            <button onClick={handleBackToInput} className="mr-2 p-1 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-full">
-               <ArrowLeft className="w-5 h-5" />
-            </button>
-         )}
-         {getHeaderTitle()}
-       </h2>
+    <header className={`h-16 border-b flex items-center justify-between px-6 z-10 backdrop-blur-md ${headerClasses}`}>
+       <div className="flex items-center gap-4">
+          {currentView === 'report' && currentMode === 'user' && (
+              <button onClick={handleBackToInput} className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10">
+                  <ArrowLeft size={20} />
+              </button>
+          )}
+          <h1 className="font-bold text-lg">
+             {getHeaderTitle()}
+          </h1>
+       </div>
 
        <div className="relative group">
-          <button className={`flex items-center gap-2 px-4 py-2 rounded-xl border font-medium text-sm transition-all ${darkMode ? 'bg-stone-800 border-stone-700 text-white' : 'bg-white border-slate-200 text-slate-700'}`}>
-            <MapPin className="w-4 h-4 text-blue-500" />
-            {selectedCity.name}
-            <ChevronDown className="w-4 h-4 opacity-50" />
-          </button>
-          <div className={`absolute right-0 top-full mt-2 w-48 rounded-xl shadow-2xl overflow-hidden hidden group-hover:block z-50 border ${darkMode ? 'bg-stone-900 border-stone-800' : 'bg-white border-slate-100'}`}>
-            <div className="flex flex-col">
+           <button className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium ${darkMode ? 'border-neutral-700 hover:bg-neutral-800' : 'border-slate-200 hover:bg-slate-50'}`}>
+               <MapPin size={16} className="text-blue-500" />
+               {selectedCity.name}
+               <ChevronDown size={14} className="opacity-50" />
+           </button>
+           {/* City Dropdown */}
+           <div className={`absolute right-0 top-full mt-2 w-48 rounded-xl border shadow-xl overflow-hidden hidden group-hover:block z-50 ${cardBg}`}>
               {CITIES.map(city => (
-                <button
-                  key={city.name}
-                  onClick={() => setSelectedCity(city)}
-                  className={`px-4 py-3 text-left text-sm ${
-                      selectedCity.name === city.name 
-                        ? (darkMode ? 'bg-stone-800 text-amber-400 font-bold' : 'bg-blue-50 text-blue-600 font-bold') 
-                        : (darkMode ? 'text-stone-300 hover:bg-stone-800' : 'text-slate-700 hover:bg-slate-50')
-                    }`}
-                >
-                  {city.name}
-                </button>
+                  <button key={city.name} onClick={() => setSelectedCity(city)} className={`w-full text-left px-4 py-3 text-sm hover:bg-blue-500 hover:text-white transition-colors ${selectedCity.name === city.name ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-500' : ''}`}>
+                      {city.name}
+                  </button>
               ))}
-            </div>
-          </div>
-        </div>
+           </div>
+       </div>
     </header>
   );
 };
