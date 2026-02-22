@@ -1,7 +1,7 @@
 import React from 'react';
-import { Shield, Bike, Fan, Calendar } from 'lucide-react';
+import { Shield, Bike, Fan, Calendar, Volume2 } from 'lucide-react';
 import { City, AqiData, ForecastDay, ThemeStyles } from '../types';
-import { getMaskRecommendation, getRecs } from '../utils';
+import { getMaskRecommendation, getRecs, getAQIBarColor } from '../utils';
 import { ROLES } from '../constants';
 
 interface DashboardViewProps {
@@ -123,37 +123,56 @@ const DashboardView: React.FC<DashboardViewProps> = ({
                  </div>
             </div>
 
-            {/* Google Weather Style Vertical Forecast */}
-            <div className={`rounded-[2.5rem] p-8 ${theme.card} flex flex-col`}>
-                <h3 className="font-bold mb-6 opacity-80 flex items-center gap-2"><Calendar size={16}/> 7-Day Trend</h3>
+            {/* Right Column: Google Weather Style Vertical Forecast & Dedicated Audio Box */}
+            <div className="flex flex-col gap-6">
                 
-                <div className="flex-1 flex items-end justify-between gap-2 h-48">
-                    {forecast.slice(0, 7).map((day, i) => {
-                        // Scale height between 10% and 100% based on max AQI of 500
-                        const heightPercent = Math.min(100, Math.max(10, (day.aqi / 400) * 100));
-                        
-                        return (
-                            <div key={i} className="flex flex-col items-center justify-end h-full w-full gap-2 group cursor-pointer">
-                                {/* Top Label (AQI Value) */}
-                                <span className="text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity mb-1">{day.aqi}</span>
-                                
-                                {/* The Bar */}
-                                <div className="w-full h-full flex flex-col justify-end">
-                                    <div 
-                                        className="w-full rounded-full bg-white/30 backdrop-blur-md relative overflow-hidden transition-all duration-500 group-hover:bg-white/50"
-                                        style={{ height: `${heightPercent}%` }}
-                                    >
-                                        {/* Optional: Add a subtle gradient inside the bar */}
-                                        <div className="absolute bottom-0 w-full h-1/2 bg-gradient-to-t from-black/10 to-transparent"></div>
+                {/* 7-Day Trend Card */}
+                <div className={`rounded-[2.5rem] p-8 ${theme.card} flex flex-col min-h-[300px]`}>
+                    <h3 className="font-bold mb-6 opacity-80 flex items-center gap-2"><Calendar size={16}/> 7-Day Trend</h3>
+                    
+                    <div className="flex-1 flex items-end justify-between gap-3 h-48">
+                        {forecast.slice(0, 7).map((day, i) => {
+                            // Scale height between 15% and 100% based on max AQI of 500
+                            const heightPercent = Math.min(100, Math.max(15, (day.aqi / 500) * 100));
+                            const barColor = getAQIBarColor(day.aqi);
+                            
+                            return (
+                                <div key={i} className="flex flex-col items-center justify-end h-full w-full gap-2 group cursor-pointer relative">
+                                    {/* Top Label (AQI Value) */}
+                                    <span className="text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity mb-1 drop-shadow-md absolute -top-6">{day.aqi}</span>
+                                    
+                                    {/* The Bar */}
+                                    <div className="w-full h-full flex flex-col justify-end relative">
+                                        {/* Track/Background for clarity */}
+                                        <div className="w-full h-full absolute bottom-0 bg-white/10 rounded-full"></div>
+                                        
+                                        {/* Filled Bar */}
+                                        <div 
+                                            className={`w-full rounded-full relative transition-all duration-500 group-hover:brightness-110 ${barColor}`}
+                                            style={{ height: `${heightPercent}%` }}
+                                        >
+                                        </div>
                                     </div>
-                                </div>
 
-                                {/* Bottom Label (Day) */}
-                                <span className="text-[10px] uppercase font-bold opacity-60 tracking-wider">{day.day}</span>
-                            </div>
-                        );
-                    })}
+                                    {/* Bottom Label (Day) */}
+                                    <span className="text-[10px] uppercase font-bold opacity-80 tracking-wider shadow-sm">{day.day}</span>
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
+
+                {/* Dedicated Audio Report Box */}
+                <div className={`rounded-[2.5rem] p-6 ${theme.card} flex items-center justify-between group cursor-pointer transition-transform hover:scale-[1.02] active:scale-[0.98]`} onClick={() => alert("Audio report module requires API Key. Feature currently simulated.")}>
+                    <div>
+                        <h4 className="font-bold text-lg">Audio Report</h4>
+                        <p className="text-xs opacity-70 mt-1">Listen to summary</p>
+                    </div>
+                    <div className={`p-4 rounded-full ${theme.immersive ? 'bg-white/20' : 'bg-blue-600 text-white'}`}>
+                        <Volume2 size={24} className="group-hover:animate-pulse" />
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

@@ -111,6 +111,7 @@ export default function AirGuardApp() {
         <ChatWidget 
             aqiData={aqiData}
             selectedCity={selectedCity}
+            userName={userName}
         />
       )}
     </div>

@@ -1,9 +1,6 @@
-## Prioritized system stability by resolving major functional defects identified in the previous UI rollout. This update ensures a seamless user experience by addressing critical bugs and optimizing performance.
-
-Run Locally
+## Run Locally
 
 **Prerequisites:**  Node.js
-
 
 1. Install dependencies:
    `npm install`

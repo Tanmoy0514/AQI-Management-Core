@@ -71,7 +71,7 @@ const SetupView: React.FC<SetupViewProps> = ({
 
             <button onClick={handleGenerate} disabled={loading} className={`w-full py-5 rounded-2xl font-bold text-xl shadow-2xl transition-all flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98] ${theme.button}`}>
                 {loading ? <Activity className="animate-spin" /> : <Sparkles className="fill-current" />}
-                {loading ? 'Calibrating...' : 'Activate Shield'}
+                {loading ? 'Analyzing...' : 'Generate Report'}
             </button>
         </div>
     </div>

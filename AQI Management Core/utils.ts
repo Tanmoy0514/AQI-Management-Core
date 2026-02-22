@@ -6,6 +6,14 @@ export const getMaskRecommendation = (aqi: number): MaskData => {
   return MASK_DATA.find(m => aqi >= m.min && aqi <= m.max) || MASK_DATA[MASK_DATA.length - 1];
 };
 
+export const getAQIBarColor = (aqi: number): string => {
+    if (aqi <= 50) return 'bg-emerald-400 shadow-[0_0_15px_rgba(52,211,153,0.6)]'; // Good
+    if (aqi <= 100) return 'bg-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.6)]'; // Moderate
+    if (aqi <= 200) return 'bg-orange-500 shadow-[0_0_15px_rgba(249,115,22,0.6)]'; // Unhealthy
+    if (aqi <= 300) return 'bg-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.6)]'; // Very Unhealthy
+    return 'bg-rose-600 shadow-[0_0_15px_rgba(225,29,72,0.6)]'; // Hazardous
+};
+
 export const getRecs = (aqiData: AqiData | null): Recommendations => {
     if (!aqiData) return {} as Recommendations;
     const aqi = aqiData.aqi;
