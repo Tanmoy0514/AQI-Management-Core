@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sun, Cloud, CloudLightning, ShieldAlert } from 'lucide-react';
+import { Sun, Cloud, CloudLightning, ShieldAlert, Construction } from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Chatbot from './components/Chatbot';
@@ -175,7 +175,6 @@ export default function App() {
                    forecast={forecast}
                    theme={theme}
                    selectedCity={selectedCity}
-                   darkMode={darkMode}
                 />
               )}
             </>
@@ -194,6 +193,7 @@ export default function App() {
           darkMode={darkMode}
           aqiData={aqiData}
           selectedCity={selectedCity}
+          userName={userName}
         />
       )}
 

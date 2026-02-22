@@ -33,9 +33,6 @@ export interface MaskInfo {
   name: string;
   layers: string;
   note: string;
-  colorClass: string;
-  textClass: string;
-  borderClass: string;
   icon: LucideIcon;
   status: string;
 }
@@ -69,4 +66,5 @@ export interface ThemeStyles {
   button: string;
   immersive: boolean;
   weatherIcon?: LucideIcon;
+  accent?: string;
 }

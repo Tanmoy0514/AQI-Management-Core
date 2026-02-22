@@ -35,7 +35,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <aside 
-      className={`flex-shrink-0 transition-all duration-300 flex flex-col z-20 ${sidebarClasses} ${sidebarOpen ? 'w-64' : 'w-20'}`}
+      className={`flex-shrink-0 transition-all duration-300 flex flex-col z-30 ${sidebarOpen ? 'w-64' : 'w-20'} ${sidebarClasses}`}
     >
       <div className={`h-16 flex items-center justify-between px-4 border-b ${borderClass}`}>
         {sidebarOpen && (
@@ -55,11 +55,11 @@ const Sidebar: React.FC<SidebarProps> = ({
         {MODES.map(mode => (
           <button
             key={mode.id}
-            onClick={() => { setCurrentMode(mode.id); }}
+            onClick={() => { setCurrentMode(mode.id); if(mode.id !== 'user') setCurrentView('input'); }}
             className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all font-medium text-sm
               ${currentMode === mode.id 
-                ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' 
-                : `${theme.textMuted} hover:bg-black/5 dark:hover:bg-white/5`
+                ? (theme.immersive ? 'bg-white/20 text-white shadow-lg' : 'bg-blue-600 text-white shadow-lg shadow-blue-500/20') 
+                : `hover:bg-black/5 dark:hover:bg-white/10 opacity-80 hover:opacity-100 ${textClasses}`
               } ${!sidebarOpen && 'justify-center'}`}
             title={!sidebarOpen ? mode.label : ''}
           >
@@ -71,9 +71,9 @@ const Sidebar: React.FC<SidebarProps> = ({
         {/* LIVE RANKING WIDGET */}
         {sidebarOpen && (
           <div className={`mt-8 pt-6 border-t ${borderClass}`}>
-              <div className={`px-3 mb-3 flex items-center justify-between`}>
-                  <span className={`text-xs font-bold uppercase tracking-wider ${theme.textMuted}`}>Live Ranking</span>
-                  <Activity size={12} className={theme.textMuted} />
+              <div className={`px-3 mb-3 flex items-center justify-between ${textClasses}`}>
+                  <span className={`text-xs font-bold uppercase tracking-wider opacity-70`}>Live Ranking</span>
+                  <Activity size={12} />
               </div>
               <div className="space-y-2">
                   {CITIES.sort((a,b) => b.baseAQI - a.baseAQI).slice(0, 5).map((city, idx) => {
@@ -84,7 +84,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                                   <span className="w-5 text-center font-mono opacity-50">{idx+1}</span>
                                   <span className="font-medium">{city.name}</span>
                               </div>
-                              <div className={`px-2 py-0.5 rounded font-bold ${mask.colorClass} ${mask.colorClass.includes('bg-white') || mask.colorClass.includes('bg-slate') ? 'text-slate-800' : 'text-white'}`}>
+                              <div className={`px-2 py-0.5 rounded font-bold ${theme.immersive ? 'bg-white/20 text-white' : (mask.status === 'Good' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700')}`}>
                                   {city.baseAQI}
                               </div>
                           </div>
@@ -96,7 +96,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       </nav>
 
       <div className={`p-4 border-t ${borderClass}`}>
-         <button onClick={() => setDarkMode(!darkMode)} className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${darkMode ? 'bg-neutral-800 text-yellow-400' : 'bg-slate-100 text-slate-600'} ${!sidebarOpen && 'justify-center'}`}>
+         <button onClick={() => setDarkMode(!darkMode)} className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${theme.immersive ? 'bg-white/10 hover:bg-white/20 text-white' : (darkMode ? 'bg-neutral-800 text-yellow-400' : 'bg-slate-100 text-slate-600')} ${!sidebarOpen && 'justify-center'}`}>
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
             {sidebarOpen && <span className="text-sm font-medium">Toggle Theme</span>}
          </button>

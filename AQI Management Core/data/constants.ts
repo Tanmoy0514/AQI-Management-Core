@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Code, Building2, Smile, Layers, 
   Stethoscope, Fan, Shield, ShieldAlert
 } from 'lucide-react';
-import { City, Role, Mode, MaskInfo, Disease } from '../types';
+import { City, Role, Mode, MaskInfo } from '../types';
 
 export const CITIES: City[] = [
   { name: 'Delhi', lat: 28.6139, lon: 77.2090, baseAQI: 380, state: 'Delhi', trend: 'up' },
@@ -26,14 +26,6 @@ export const ROLES: Role[] = [
   { id: 'other', label: 'Others', icon: Info, contextLabel: 'Profession Name' },
 ];
 
-export const DISEASES: Disease[] = [
-  { id: 'none', label: 'None / Healthy' },
-  { id: 'asthma', label: 'Asthma' },
-  { id: 'copd', label: 'COPD' },
-  { id: 'heart', label: 'Heart Condition' },
-  { id: 'allergies', label: 'Allergies' },
-];
-
 export const MODES: Mode[] = [
   { id: 'user', label: 'User Dashboard', icon: LayoutDashboard },
   { id: 'dev', label: 'Developer Console', icon: Code },
@@ -41,10 +33,10 @@ export const MODES: Mode[] = [
 ];
 
 export const MASK_DATA: MaskInfo[] = [
-    { min: 0, max: 50, name: "No Mask Needed", layers: "0 Layers", note: "Enjoy the fresh air.", colorClass: "bg-emerald-500", textClass: "text-emerald-600", borderClass: "border-emerald-500", icon: Smile, status: "Good" },
-    { min: 51, max: 100, name: "Cloth Mask", layers: "2-3 Layers", note: "Optional for sensitive groups.", colorClass: "bg-yellow-400", textClass: "text-yellow-600", borderClass: "border-yellow-500", icon: Layers, status: "Moderate" },
-    { min: 101, max: 150, name: "Surgical Mask", layers: "3 Layers (SMS)", note: "Recommended for sensitive groups.", colorClass: "bg-orange-400", textClass: "text-orange-600", borderClass: "border-orange-500", icon: Stethoscope, status: "Unhealthy for Sensitive" },
-    { min: 151, max: 200, name: "N95 / KN95", layers: "4 Layers", note: "Recommended for everyone outdoors.", colorClass: "bg-red-500", textClass: "text-red-600", borderClass: "border-red-500", icon: Fan, status: "Unhealthy" },
-    { min: 201, max: 300, name: "N95 / FFP2", layers: "5 Layers", note: "Avoid outdoor exertion.", colorClass: "bg-purple-600", textClass: "text-purple-600", borderClass: "border-purple-600", icon: Shield, status: "Very Unhealthy" },
-    { min: 301, max: 9999, name: "N99 / P100", layers: "5+ Layers", note: "Emergency conditions. Stay indoors.", colorClass: "bg-rose-900", textClass: "text-rose-900", borderClass: "border-rose-900", icon: ShieldAlert, status: "Hazardous" }
+    { min: 0, max: 50, name: "No Mask Needed", layers: "0 Layers", note: "Enjoy the fresh air.", icon: Smile, status: "Good" },
+    { min: 51, max: 100, name: "Cloth Mask", layers: "2-3 Layers", note: "Optional for sensitive groups.", icon: Layers, status: "Moderate" },
+    { min: 101, max: 150, name: "Surgical Mask", layers: "3 Layers", note: "Recommended for sensitive groups.", icon: Stethoscope, status: "Unhealthy for Sensitive" },
+    { min: 151, max: 200, name: "N95 / KN95", layers: "4 Layers", note: "Recommended for everyone outdoors.", icon: Fan, status: "Unhealthy" },
+    { min: 201, max: 300, name: "N95 / FFP2", layers: "5 Layers", note: "Avoid outdoor exertion.", icon: Shield, status: "Very Unhealthy" },
+    { min: 301, max: 9999, name: "N99 / P100", layers: "5+ Layers", note: "Emergency conditions. Stay indoors.", icon: ShieldAlert, status: "Hazardous" }
 ];
