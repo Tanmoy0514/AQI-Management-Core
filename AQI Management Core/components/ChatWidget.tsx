@@ -1,52 +1,99 @@
-import React, { useState } from 'react';
-import { Cpu, Send, X, MessageSquare } from 'lucide-react';
-import { ModeKey } from '../types';
+import React, { useState, useEffect, useRef } from 'react';
+import { Bot, X, Send, MessageCircle } from 'lucide-react';
+import { City, AqiData } from '../types';
+import { getMaskRecommendation } from '../utils';
 
 interface ChatWidgetProps {
-  mode: ModeKey;
-  city: string;
-  data: any;
+    aqiData: AqiData | null;
+    selectedCity: City;
 }
 
-const ChatWidget: React.FC<ChatWidgetProps> = ({ mode, city, data }) => {
-  const [chatOpen, setChatOpen] = useState(false);
-  const [chatHistory, setChatHistory] = useState<Array<{role: string, text: string}>>([]);
-  const [chatInput, setChatInput] = useState("");
+interface ChatMessage {
+    id: number;
+    type: 'user' | 'bot';
+    text: string;
+}
 
-  const handleChatSend = () => {
-    if(!chatInput.trim()) return;
-    const userMsg = { role: 'user', text: chatInput };
-    setChatHistory([...chatHistory, userMsg]);
-    setChatInput("");
-    setTimeout(() => {
-      let reply = "I can help with that.";
-      if(mode === 'USER') reply = `In ${city}, the air is currently ${data.aqi > 200 ? 'unsafe' : 'okay'}. Wear a mask!`;
-      if(mode === 'DEV') reply = `Query executed. Latency: 45ms. Returning JSON object for ${city}.`;
-      if(mode === 'GOV') reply = `Noted. Draft policy for ${city} pollution control saved to dashboard.`;
-      setChatHistory(prev => [...prev, { role: 'ai', text: reply }]);
-    }, 800);
-  };
+const ChatWidget: React.FC<ChatWidgetProps> = ({ aqiData, selectedCity }) => {
+    const [chatOpen, setChatOpen] = useState(false);
+    const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
+        { id: 1, type: 'bot', text: 'Hi! I am AirGuard. How can I help you today?' }
+    ]);
+    const [chatInput, setChatInput] = useState('');
+    const [isBotTyping, setIsBotTyping] = useState(false);
+    const chatEndRef = useRef<HTMLDivElement>(null);
 
-  return (
-    <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end">
-      {chatOpen && (
-        <div className={`mb-4 w-80 h-96 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 fade-in ${mode === 'DEV' ? 'bg-[#0d1117] border border-gray-700 text-green-400' : 'bg-white text-slate-800'}`}>
-          <div className={`p-3 flex justify-between items-center ${mode === 'DEV' ? 'bg-gray-800' : 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white'}`}>
-            <div className="flex items-center gap-2"><Cpu size={16} /><span className="text-xs font-bold uppercase">{mode} Assistant</span></div><button onClick={() => setChatOpen(false)}><X size={16} /></button>
-          </div>
-          <div className="flex-1 overflow-y-auto p-3 space-y-3 bg-opacity-50">
-             {chatHistory.length === 0 && <div className="text-center text-xs opacity-50 mt-10">Ask me about AQI, Health, or Code...</div>}
-             {chatHistory.map((msg, i) => (<div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}><div className={`max-w-[80%] p-2 rounded-xl text-xs ${msg.role === 'user' ? 'bg-slate-200 text-slate-800' : (mode === 'DEV' ? 'bg-gray-800 border border-green-900' : 'bg-blue-50 text-blue-900 border border-blue-100')}`}>{msg.text}</div></div>))}
-          </div>
-          <div className="p-2 border-t border-gray-100 flex gap-2">
-            <input value={chatInput} onChange={e => setChatInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleChatSend()} className={`flex-1 text-xs p-2 rounded outline-none ${mode === 'DEV' ? 'bg-gray-900 text-white' : 'bg-gray-100'}`} placeholder="Type..." />
-            <button onClick={handleChatSend} className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"><Send size={14} /></button>
-          </div>
+    useEffect(() => {
+        chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [chatMessages, isBotTyping, chatOpen]);
+
+    const handleSendMessage = () => {
+        if (!chatInput.trim()) return;
+        const userText = chatInput;
+        setChatMessages(prev => [...prev, { id: Date.now(), type: 'user', text: userText }]);
+        setChatInput('');
+        setIsBotTyping(true);
+
+        setTimeout(() => {
+            let botResponse = '';
+            if (!aqiData) {
+                botResponse = "I'm still calibrating the sensors. Please wait a moment.";
+            } else {
+                const maskInfo = getMaskRecommendation(aqiData.aqi);
+                botResponse = `Current AQI in ${selectedCity.name} is ${aqiData.aqi}. Recommendation: ${maskInfo.name}.`;
+            }
+            setChatMessages(prev => [...prev, { id: Date.now() + 1, type: 'bot', text: botResponse }]);
+            setIsBotTyping(false);
+        }, 1000);
+    };
+
+    return (
+        <div className="fixed bottom-6 right-6 z-50">
+           {chatOpen ? (
+               <div className={`w-80 h-[500px] rounded-[2rem] shadow-2xl flex flex-col border overflow-hidden animate-in slide-in-from-bottom-10 fade-in bg-white dark:bg-neutral-900 border-slate-200 dark:border-neutral-800`}>
+                   <div className="p-5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex justify-between items-center">
+                       <div className="flex items-center gap-2">
+                           <Bot size={20} /> <span className="font-bold">AirGuard AI</span>
+                       </div>
+                       <button onClick={() => setChatOpen(false)}><X size={20} /></button>
+                   </div>
+                   
+                   {/* Messages Area */}
+                   <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 dark:bg-neutral-900 text-slate-800 dark:text-slate-200">
+                       {chatMessages.map(msg => (
+                           <div key={msg.id} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+                               <div className={`max-w-[85%] p-3.5 rounded-2xl text-sm leading-relaxed shadow-sm 
+                                   ${msg.type === 'user' 
+                                       ? 'bg-blue-600 text-white rounded-br-none' 
+                                       : 'bg-white dark:bg-neutral-800 border border-slate-100 dark:border-neutral-700 rounded-bl-none text-slate-800 dark:text-slate-200'
+                                   }`}>
+                                   {msg.text}
+                               </div>
+                           </div>
+                       ))}
+                       {isBotTyping && <div className="text-xs opacity-50 ml-4 animate-pulse text-slate-500 dark:text-slate-400">Thinking...</div>}
+                       <div ref={chatEndRef}></div>
+                   </div>
+
+                   {/* Input Area */}
+                   <div className="p-3 border-t border-slate-200 dark:border-neutral-800 flex gap-2 bg-white dark:bg-neutral-900">
+                       <input 
+                           value={chatInput} 
+                           onChange={e => setChatInput(e.target.value)} 
+                           onKeyDown={e => e.key === 'Enter' && handleSendMessage()} 
+                           placeholder="Ask anything..." 
+                           className={`flex-1 p-3 rounded-xl text-sm outline-none bg-slate-100 dark:bg-neutral-800 text-slate-900 dark:text-white focus:ring-2 ring-blue-500/50 transition-all`} 
+                       />
+                       <button onClick={handleSendMessage} className="p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors"><Send size={18} /></button>
+                   </div>
+               </div>
+           ) : (
+               <button onClick={() => setChatOpen(true)} className="p-4 rounded-full bg-blue-600 text-white shadow-xl hover:scale-110 transition-transform">
+                   <MessageCircle size={28} />
+               </button>
+           )}
         </div>
-      )}
-      <button onClick={() => setChatOpen(!chatOpen)} className={`h-14 w-14 rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110 ${mode === 'DEV' ? 'bg-green-600 text-white' : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white'}`}>{chatOpen ? <X size={24} /> : <MessageSquare size={24} />}</button>
-    </div>
-  );
+    );
 };
 
 export default ChatWidget;

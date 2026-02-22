@@ -16,18 +16,13 @@ export interface Role {
   contextLabel: string;
 }
 
-export interface Disease {
-  id: string;
-  label: string;
-}
-
 export interface Mode {
   id: string;
   label: string;
   icon: LucideIcon;
 }
 
-export interface MaskInfo {
+export interface MaskData {
   min: number;
   max: number;
   name: string;
@@ -37,7 +32,7 @@ export interface MaskInfo {
   status: string;
 }
 
-export interface AQIData {
+export interface AqiData {
   aqi: number;
   pm25: number;
   pm10: number;
@@ -53,18 +48,23 @@ export interface ForecastDay {
   aqi: number;
 }
 
-export interface ChatMessage {
-  id: number;
-  type: 'bot' | 'user';
-  text: string;
-}
-
 export interface ThemeStyles {
   wrapper: string;
   card: string;
   textMuted: string;
   button: string;
-  immersive: boolean;
+  immersive?: boolean;
   weatherIcon?: LucideIcon;
-  accent?: string;
+}
+
+export interface Recommendation {
+    allowed: boolean;
+    text: string;
+}
+
+export interface Recommendations {
+    sport: Recommendation;
+    window: Recommendation;
+    mask: Recommendation;
+    purifier: Recommendation;
 }

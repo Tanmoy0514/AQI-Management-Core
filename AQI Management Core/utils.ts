@@ -1,96 +1,68 @@
-import { AQIData, AnalysisAdvice, MaskInfo } from './types';
+import { Sun, Cloud, CloudLightning, ShieldAlert } from 'lucide-react';
 import { MASK_DATA } from './constants';
+import { MaskData, AqiData, ThemeStyles, Recommendations } from './types';
 
-// Helper to get Detailed Mask Info
-export const getMaskRecommendation = (aqi: number): MaskInfo => {
-    return MASK_DATA.find(m => aqi >= m.min && aqi <= m.max) || MASK_DATA[MASK_DATA.length - 1];
+export const getMaskRecommendation = (aqi: number): MaskData => {
+  return MASK_DATA.find(m => aqi >= m.min && aqi <= m.max) || MASK_DATA[MASK_DATA.length - 1];
 };
 
-// Helper to get color based on AQI (Using Mask Data for consistency)
-export const getAQIColor = (aqi: number) => {
-  const maskInfo = getMaskRecommendation(aqi);
-  // Extract base color name from class (e.g., bg-emerald-500 -> emerald) to build border class
-  const colorName = maskInfo.colorClass.split('-')[1];
-  return { 
-      bg: maskInfo.colorClass, 
-      text: maskInfo.textClass, 
-      border: `border-${colorName}-500`, 
-      label: maskInfo.status 
-  };
+export const getRecs = (aqiData: AqiData | null): Recommendations => {
+    if (!aqiData) return {} as Recommendations;
+    const aqi = aqiData.aqi;
+    return {
+        sport: aqi > 150 ? { allowed: false, text: "No Outdoor Sports" } : { allowed: true, text: "Outdoor Sports OK" },
+        window: aqi > 200 ? { allowed: false, text: "Close Windows" } : { allowed: true, text: "Ventilation OK" },
+        mask: aqi > 100 ? { allowed: true, text: "Mask Required" } : { allowed: false, text: "No Mask Needed" },
+        purifier: aqi > 150 ? { allowed: true, text: "Use Purifier" } : { allowed: false, text: "Purifier Optional" },
+    };
 };
 
-// Analysis Logic
-export const getRoleBasedAnalysis = (
-  aqiData: AQIData | null,
-  userRole: string,
-  institutionName: string
-): AnalysisAdvice | null => {
-  if (!aqiData) return null;
-  const aqi = aqiData.aqi;
-  const maskInfo = getMaskRecommendation(aqi);
-  
-  const isSevere = aqi > 300;
-  const isPoor = aqi > 200;
-  const isModerate = aqi > 100;
+export const getThemeStyles = (
+  currentView: string,
+  currentMode: string,
+  darkMode: boolean,
+  aqiData: AqiData | null
+): ThemeStyles => {
+    // Default App Theme (Input Mode)
+    if (currentView === 'input' || currentMode !== 'user') {
+      return {
+        wrapper: darkMode ? 'bg-neutral-950 text-white' : 'bg-slate-50 text-slate-900',
+        card: darkMode ? 'bg-neutral-900 border-neutral-800' : 'bg-white border-slate-200 shadow-sm',
+        textMuted: darkMode ? 'text-neutral-400' : 'text-slate-500',
+        button: 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-500/30'
+      };
+    }
 
-  const baseAdvice = {
-      mask: maskInfo.name,
-      maskNote: maskInfo.note,
-      maskLayers: maskInfo.layers,
-      riskLevel: maskInfo.status,
-      generalAdvice: "Stay hydrated and monitor breathing."
-  };
+    // Immersive Report Theme (Based on AQI)
+    const aqi = aqiData?.aqi || 0;
+    let gradient = '';
+    let icon = Sun;
+    let accent = '';
 
-  let roleAdvice = {
-      title: "General Advisory",
-      primaryAction: "Limit outdoor exposure.",
-      commute: "Use public transport.",
-      specific: "Keep windows closed."
-  };
+    if (aqi <= 50) { // Good
+        gradient = 'bg-gradient-to-br from-cyan-400 via-blue-500 to-blue-600';
+        icon = Sun;
+        accent = 'bg-cyan-500';
+    } else if (aqi <= 100) { // Moderate
+        gradient = 'bg-gradient-to-br from-blue-500 via-indigo-400 to-amber-300';
+        icon = Cloud;
+        accent = 'bg-amber-400';
+    } else if (aqi <= 200) { // Poor
+        gradient = 'bg-gradient-to-br from-orange-400 via-amber-500 to-slate-500';
+        icon = CloudLightning;
+        accent = 'bg-orange-500';
+    } else { // Hazardous
+        gradient = 'bg-gradient-to-br from-purple-700 via-rose-600 to-orange-500';
+        icon = ShieldAlert;
+        accent = 'bg-rose-500';
+    }
 
-  switch(userRole) {
-      case 'student':
-          roleAdvice = {
-              title: `Student Advisory: ${institutionName || 'School'}`,
-              primaryAction: isSevere ? "Classes likely Suspended/Online." : isPoor ? "No Outdoor Sports/Assembly." : "Attend school with Mask.",
-              commute: isSevere ? "Avoid School Bus if non-AC." : "Wear mask during commute.",
-              specific: isSevere ? "School playground closed." : "Outdoor recess allowed for < 15 mins."
-          };
-          break;
-      case 'farmer':
-          roleAdvice = {
-              title: "Agricultural Field Advisory",
-              primaryAction: isSevere ? "Suspend burning/spraying. Stay indoors." : "Work only during 10 AM - 3 PM.",
-              commute: "Cover face with wet cloth if mask unavailable.",
-              specific: "Avoid heavy exertion in fields. Wash eyes frequently."
-          };
-          break;
-      case 'delivery':
-          roleAdvice = {
-              title: `Logistics Protocol: ${institutionName || 'Company'}`,
-              primaryAction: isSevere ? "Request Shift Cancellation/Hazard Pay." : "Mandatory 10-min break every hour indoors.",
-              commute: "Full-face helmet + N95 Mask mandatory.",
-              specific: `Company Health Check: Report breathing issues to ${institutionName} HR immediately.`
-          };
-          break;
-      case 'office':
-          roleAdvice = {
-              title: "Workplace Advisory",
-              primaryAction: isSevere ? "Request Work From Home (WFH)." : "Lunch breaks strictly indoors.",
-              commute: "Use Metro or Car with HEPA filter. Avoid auto-rickshaws.",
-              specific: "Ensure office HVAC filters are cleaned."
-          };
-          break;
-      case 'athlete':
-          roleAdvice = {
-              title: "Training Advisory",
-              primaryAction: isPoor ? "ALL Training Indoors only." : "Low-intensity training allowed.",
-              commute: "Wear mask strictly pre/post workout.",
-              specific: "Monitor heart rate. Stop if chest feels heavy."
-          };
-          break;
-      default:
-          break;
-  }
-  return { ...baseAdvice, ...roleAdvice };
+    return {
+        wrapper: `${gradient} text-white selection:bg-white/30`,
+        card: 'bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl text-white',
+        textMuted: 'text-white/70',
+        button: 'bg-white/20 hover:bg-white/30 text-white border border-white/30',
+        immersive: true,
+        weatherIcon: icon
+    };
 };

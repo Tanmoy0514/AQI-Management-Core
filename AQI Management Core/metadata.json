@@ -1,5 +1,5 @@
 {
   "name": "AirGuard",
-  "description": "A comprehensive air quality monitoring dashboard featuring user advisories, developer tools, and government insights.",
+  "description": "A comprehensive air quality monitoring dashboard featuring real-time AQI tracking, health recommendations, and personalized user profiles.",
   "requestFramePermissions": []
 }
