@@ -1,5 +1,5 @@
 {
-  "name": "AirGuard",
-  "description": "A comprehensive air quality monitoring dashboard featuring real-time AQI tracking, health recommendations, and personalized user profiles.",
+  "name": "Gemini AI Assistant",
+  "description": "A modern, responsive chat application powered by Google's Gemini 3 Flash model, featuring real-time streaming responses and a clean UI.",
   "requestFramePermissions": []
 }
